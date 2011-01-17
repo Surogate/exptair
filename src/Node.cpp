@@ -17,7 +17,7 @@ Node::Node() : _value(false), _evaluate(false), _let(0) {
 Node::Node(const char letter) : _value(false), _let(letter) {
 }
 
-Node::Node(const Node& orig): _let(orig._let) {
+Node::Node(const Node& orig) : _let(orig._let) {
     this->operator =(orig);
 }
 
