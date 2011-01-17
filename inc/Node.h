@@ -15,7 +15,7 @@ class BoolFunc;
 //Les variable booléenne 
 class Node {
 public:
-    typedef std::list<BoolFunc> FuncList;
+    typedef std::list<Node> FuncList;
 
     Node();
     Node(const char letters);
@@ -23,7 +23,7 @@ public:
     virtual ~Node();
     Node& operator=(const Node& orig);
     
-    void addBoolFunc(BoolFunc& func);
+    void addBoolFunc(Node& func);
     virtual bool operator()();
     void operator=(bool);
 

@@ -26,7 +26,7 @@ public:
 
     BoolFunc& operator =(const BoolFunc& orig);
     bool operator()();
-    int compexity();
+    int complexity();
     void addOperator(Oper& op);
     void addOperand(Node& no);
 private:

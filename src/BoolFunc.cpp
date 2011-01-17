@@ -55,7 +55,7 @@ bool BoolFunc::operator ()() {
 }
 
 //on evalue la difficulté a evaluer l'equation suivant les operator dedans
-int BoolFunc::compexity() {
+int BoolFunc::complexity() {
     int result = 0;
 
     OperatorCont::const_iterator it = _operator.begin();
