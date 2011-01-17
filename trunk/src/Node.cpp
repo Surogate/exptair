@@ -37,8 +37,8 @@ Node& Node::operator=(const Node& orig) {
 
 // ajoute une regle dans la liste, suivant sa complexite
 
-void Node::addBoolFunc(BoolFunc& func) {
-    int complexity = func.compexity();
+void Node::addBoolFunc(Node& func) {
+    int complexity = func.complexity();
 
     FuncList::iterator it = _boolFuncList.begin();
     FuncList::iterator ite = _boolFuncList.end();
@@ -48,7 +48,7 @@ void Node::addBoolFunc(BoolFunc& func) {
     }
 
     if (it != ite) {
-        _boolFuncList.insert(func);
+        _boolFuncList.insert(it, func);
     } else {
         _boolFuncList.push_back(func);
     }
@@ -91,8 +91,8 @@ int Node::complexity() {
     } else {
         comp = 0;
         _compEvaluate = true;
-        FuncList::const_iterator it = _boolFuncList.begin();
-        FuncList::const_iterator ite = _boolFuncList.end();
+        FuncList::iterator it = _boolFuncList.begin();
+        FuncList::iterator ite = _boolFuncList.end();
 
         while (it != ite) {
             if (comp < it->complexity())
