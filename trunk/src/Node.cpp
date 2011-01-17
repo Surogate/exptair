@@ -37,7 +37,7 @@ Node& Node::operator=(const Node& orig) {
 
 // ajoute une regle dans la liste, suivant sa complexite
 
-void Node::addBoolFunc(Node& func) {
+void Node::addBoolFunc(BoolFunc& func) {
     int complexity = func.complexity();
 
     FuncList::iterator it = _boolFuncList.begin();
