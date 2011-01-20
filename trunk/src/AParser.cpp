@@ -12,7 +12,7 @@
 
 #include "AParser.hpp"
 
-bool AParser::LoadPath(const std::string& path) {
+bool AParser::loadPath(const std::string& path) {
     std::ifstream script(path.c_str(), std::ios::in | std::ios::binary | std::ios::ate);
     if (script.good()) {
         std::ifstream::pos_type fileSize = script.tellg();
@@ -21,28 +21,28 @@ bool AParser::LoadPath(const std::string& path) {
         script.read(&bytes[0], fileSize);
         script.close();
         _file.assign(bytes.begin(), bytes.end());
-        iterator = 0;
-        size = _file.size();
-        lineConsumed = 1;
-        letterPos = 0;
+        _iterator = 0;
+        _size = _file.size();
+        _lineConsumed = 1;
+        _letterPos = 0;
         return true;
     }
     return false;
 }
 
-void AParser::SetText(std::string& str) {
+void AParser::setText(std::string& str) {
     _file = str;
-    iterator = 0;
-    size = _file.size();
-    lineConsumed = 1;
-    letterPos = 0;
+    _iterator = 0;
+    _size = _file.size();
+    _lineConsumed = 1;
+    _letterPos = 0;
 }
 
 bool AParser::char_(std::string& in) {
     if (!eof())
     {
-        in += _file[iterator];
-        ++iterator;
+        in += _file[_iterator];
+        ++_iterator;
         return true;
     }
     return false;
@@ -51,8 +51,8 @@ bool AParser::char_(std::string& in) {
 bool AParser::char_(char c, std::string& in) {
     if (peek(c))
     {
-        in += _file[iterator];
-        ++iterator;
+        in += _file[_iterator];
+        ++_iterator;
         return true;
     }
     return false;
@@ -61,8 +61,8 @@ bool AParser::char_(char c, std::string& in) {
 bool AParser::char_(char from, char to, std::string& in) {
     if (peek(from, to))
     {
-        in += _file[iterator];
-        ++iterator;
+        in += _file[_iterator];
+        ++_iterator;
         return true;
     }
     return false;
@@ -72,17 +72,17 @@ bool AParser::readQuotedText(std::string text) {
     if (char_('"') && readText(text) && char_('"')) {
         return true;
     }
-    iterator--;
+    _iterator--;
     return false;
 }
 
 bool AParser::readText(std::string textConsumed) {
-    unsigned int tmp = iterator;
+    unsigned int tmp = _iterator;
     for (unsigned int i = 0; i < textConsumed.size(); i++)
     {
         if (!char_(textConsumed[i]))
         {
-            iterator = tmp;
+            _iterator = tmp;
             return false;
         }
     }
@@ -90,16 +90,16 @@ bool AParser::readText(std::string textConsumed) {
 }
 
 bool AParser::readIdentifier(std::string& in) {
-    unsigned int tmp = iterator;
+    unsigned int tmp = _iterator;
     if (char_('"'))
     {
         while (!peek('"'))
             if (!char_(in)) {
-                iterator = tmp;
+                _iterator = tmp;
                 return false;
             }
         if (!char_('"')) {
-            iterator = tmp;
+            _iterator = tmp;
             return false;
         }
         return true;
@@ -156,17 +156,17 @@ bool AParser::readFloat(float& in) {
 }
 
 unsigned int AParser::getLineConsumed() {
-    return lineConsumed;
+    return _lineConsumed;
 }
 
 unsigned int AParser::getIterator() {
-    return iterator;
+    return _iterator;
 }
 
 char AParser::getTextIterator() {
-    return _file[iterator];
+    return _file[_iterator];
 }
 
 unsigned int AParser::getLetterPos() {
-    return iterator - letterPos;
+    return _iterator - _letterPos;
 }

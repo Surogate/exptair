@@ -9,6 +9,7 @@
 #define	NODE_H
 
 #include <list>
+#include <map>
 
 class BoolFunc;
 
@@ -16,6 +17,7 @@ class BoolFunc;
 class Node {
 public:
     typedef std::list<BoolFunc> FuncList;
+    typedef std::map<char, bool> ClosedList;
 
     Node();
     Node(const char letters);
@@ -24,10 +26,15 @@ public:
     Node& operator=(const Node& orig);
     
     void addBoolFunc(BoolFunc& func);
+    virtual int forward(ClosedList* list = 0);
     virtual bool operator()();
     void operator=(bool);
+    char getLetter() const;
 
     virtual int complexity();
+protected:
+    void addInClosedList(ClosedList& list, char letter);
+    
 private:
     bool _value;
     bool _evaluate; //a-t-on deja calculé la valeur ?
