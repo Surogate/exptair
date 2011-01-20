@@ -66,7 +66,7 @@ void Node::operator=(bool val) {
     _value = val;
 }
 
-int Node::forward(ClosedList* list = 0) {
+int Node::forward(ClosedList* list) {
     if (_evaluate)
         return _value;
 
@@ -75,13 +75,13 @@ int Node::forward(ClosedList* list = 0) {
 
     if (!list) {
         ClosedList _list;
-        return this->forward(_list);
+        return this->forward(&_list);
     }
     
     if (list->find(_let) == list->end()) {
         int answer = 0;
 
-        list[_let] = true;
+        list->operator [](_let) = true;
         while (it != ite) {
             int result = it->forward(list);
 
@@ -141,5 +141,5 @@ int Node::complexity() {
 }
 
 void Node::addInClosedList(ClosedList& list, char letter) {
-    list.push_back(letter);
+    list[letter] = true;
 }
