@@ -5,14 +5,34 @@
  * Created on January 13, 2011, 2:46 PM
  */
 
+#include <map>
+
 #include "Ai.h"
+#include "Node.h"
+#include "InputFileParser.hpp"
 
-Ai::Ai() {
+void Ai::loadPath(const std::string& filePath) {
+    InputFileParser parser;
+    parser.parseFile(filePath, *this);
 }
 
-Ai::Ai(const Ai& orig) {
+void Ai::addNode(Node* no) {
+    _nodeList[no->getLetter()] = no;
 }
 
-Ai::~Ai() {
+Node* Ai::getNode(char letter) {
+    NodeCont::iterator it = _nodeList.find(letter);
+
+    if (it != _nodeList.end()) {
+        return it->second;
+    }
+    return 0;
 }
 
+void Ai::forward()  {
+    
+}
+
+void Ai::backward() {
+    
+}

@@ -6,6 +6,7 @@
  */
 
 #include <list>
+#include <map>
 
 
 #include "Node.h"
@@ -34,6 +35,10 @@ Node& Node::operator=(const Node& orig) {
     return *this;
 }
 
+char Node::getLetter() const {
+    return _let;
+}
+
 
 // ajoute une regle dans la liste, suivant sa complexite
 
@@ -59,6 +64,37 @@ void Node::addBoolFunc(BoolFunc& func) {
 void Node::operator=(bool val) {
     _evaluate = true;
     _value = val;
+}
+
+int Node::forward(ClosedList* list = 0) {
+    if (_evaluate)
+        return _value;
+
+    FuncList::iterator it = _boolFuncList.begin();
+    FuncList::iterator ite = _boolFuncList.begin();
+
+    if (!list) {
+        ClosedList _list;
+        return this->forward(_list);
+    }
+    
+    if (list->find(_let) == list->end()) {
+        int answer = 0;
+
+        list[_let] = true;
+        while (it != ite) {
+            int result = it->forward(list);
+
+            if (result < 0)
+                answer = -1;
+            if (result > 0) {
+                this->operator =(true);
+                return 1;
+            }
+            ++it;
+        }
+        return answer;
+    }
 }
 
 //on tente d'evaluer une node suivant ses regle
@@ -102,4 +138,8 @@ int Node::complexity() {
         _compEvaluate = false;
         return comp;
     }
+}
+
+void Node::addInClosedList(ClosedList& list, char letter) {
+    list.push_back(letter);
 }

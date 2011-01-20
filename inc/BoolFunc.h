@@ -25,6 +25,7 @@ public:
     virtual ~BoolFunc();
 
     BoolFunc& operator =(const BoolFunc& orig);
+    int forward(ClosedList* list = 0);
     bool operator()();
     int complexity();
     void addOperator(Oper& op);
