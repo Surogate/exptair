@@ -26,10 +26,10 @@ BoolFunc& BoolFunc::operator =(const BoolFunc& orig) {
     return *this;
 }
 
-int BoolFunc::forward(ClosedList* list = 0) {
+int BoolFunc::forward(ClosedList* list) {
     if (!list) {
         ClosedList _list;
-        return this->forward(_list);
+        return this->forward(&_list);
     }
 
 
