@@ -16,7 +16,7 @@ class Ai {
 public:
     typedef std::map<char, Node*> NodeCont;
 
-    void loadPath(const std::string& filepath);
+    bool loadPath(const std::string& filepath);
     void addNode(Node* no);
     Node* getNode(char letter);
     void forward();

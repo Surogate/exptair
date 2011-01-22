@@ -20,25 +20,20 @@ xbool And::forward(xbool a, xbool b) const {
     return xfalse;
 }
 
-
 int And::complexity() const {
     return 1;
-}
-
-Oper* And::clone() {
-    return new And(*this);
 }
 
 xbool Or::forward(xbool a, xbool b) const {
     if (a == xtrue || b == xtrue)
         return xtrue;
+    if (a == xreevaluate || b == xreevaluate)
+        return xreevaluate;
+    if (a == xundefined || b == xundefined)
+        return xundefined;
     return xfalse;
 }
 
 int Or::complexity() const {
     return 2;
-}
-
-Oper* Or::clone() {
-    return new Or(*this);
 }

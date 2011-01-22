@@ -11,9 +11,9 @@
 #include "Node.h"
 #include "InputFileParser.hpp"
 
-void Ai::loadPath(const std::string& filePath) {
+bool Ai::loadPath(const std::string& filePath) {
     InputFileParser parser;
-    parser.parseFile(filePath, *this);
+    return parser.parseFile(filePath, *this);
 }
 
 void Ai::addNode(Node* no) {
@@ -30,7 +30,26 @@ Node* Ai::getNode(char letter) {
 }
 
 void Ai::forward()  {
-    
+    std::vector<char> nodeTrue;
+    std::vector<char> nodeFalse;
+    std::vector<char> nodeUnde;
+
+    NodeCont::iterator it = _nodeList.begin();
+    NodeCont::iterator ite = _nodeList.end();
+
+    while (it != ite) {
+        xbool result = (it->second)->forward();
+        char letter = it->second->getLetter();
+        if (result == xtrue) {
+            nodeTrue.push_back(letter);
+        } else if (result == xfalse) {
+            nodeFalse.push_back(letter);
+        } else {
+            nodeUnde.push_back(letter);
+        }
+
+        ++it;
+    }
 }
 
 void Ai::backward() {
