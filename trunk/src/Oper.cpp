@@ -9,6 +9,16 @@
 #include "Node.h"
 #include "AParser.hpp"
 
+xbool And::forward(xbool a, xbool b) const {
+    if (a == xreevaluate || b == xreevaluate)
+        return xreevaluate;
+    if (a == xundefined || b == xundefined)
+        return xundefined;
+    if (a == xtrue && b == xtrue)
+        return xtrue;
+    return xfalse;
+}
+
 bool And::operator()(Node& a, Node& b) const {
     return a() && b();
 }
@@ -19,6 +29,11 @@ int And::complexity() const {
 
 Oper* And::clone() {
     return new And(*this);
+}
+
+xbool Or::forward(xbool a, xbool b) const {
+    if (a == xtrue || b == xtrue)
+        return xtrue;
 }
 
 bool Or::operator ()(Node& a, Node& b) const {

@@ -12,10 +12,10 @@
 #include "Node.h"
 #include "BoolFunc.h"
 
-Node::Node() : _value(false), _evaluate(false), _let(0) {
+Node::Node() : _value(xundefined), _evaluate(false), _let(0) {
 }
 
-Node::Node(const char letter) : _value(false), _let(letter) {
+Node::Node(const char letter) : _value(xundefined), _let(letter) {
 }
 
 Node::Node(const Node& orig) : _let(orig._let) {
@@ -61,12 +61,12 @@ void Node::addBoolFunc(BoolFunc& func) {
 
 //on assigne une valeur par defaut a une node
 
-void Node::operator=(bool val) {
+void Node::operator=(xbool val) {
     _evaluate = true;
     _value = val;
 }
 
-int Node::forward(ClosedList* list) {
+xbool Node::forward(ClosedList* list) {
     if (_evaluate)
         return _value;
 
@@ -79,42 +79,26 @@ int Node::forward(ClosedList* list) {
     }
     
     if (list->find(_let) == list->end()) {
-        int answer = 0;
+        xbool answer = xfalse;
 
         list->operator [](_let) = true;
         while (it != ite) {
-            int result = it->forward(list);
+            xbool result = it->forward(list);
 
-            if (result < 0)
-                answer = -1;
-            if (result > 0) {
-                this->operator =(true);
-                return 1;
+            if (result == xundefined)
+                answer = xundefined;
+            if (result == xtrue) {
+                this->operator =(xtrue);
+                return xtrue;
             }
             ++it;
         }
         return answer;
+    } else {
+        return xreevaluate;
     }
 }
 
-//on tente d'evaluer une node suivant ses regle
-
-bool Node::operator ()() {
-    if (!_evaluate) {
-        _evaluate = true;
-        FuncList::iterator it = _boolFuncList.begin();
-        FuncList::iterator ite = _boolFuncList.begin();
-
-        while (it != ite && it->operator ()()) {
-            ++it;
-        }
-
-        if (it != ite) {
-            _value = true;
-        }
-    }
-    return _value;
-}
 
 // on evalue la dificulte d'evaluer une node
 
