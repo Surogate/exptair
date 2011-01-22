@@ -10,6 +10,7 @@
 
 #include <list>
 #include <map>
+#include "xbool.hpp"
 
 class BoolFunc;
 
@@ -26,9 +27,8 @@ public:
     Node& operator=(const Node& orig);
     
     void addBoolFunc(BoolFunc& func);
-    virtual int forward(ClosedList* list = 0);
-    virtual bool operator()();
-    void operator=(bool);
+    virtual xbool forward(ClosedList* list = 0);
+    void operator=(xbool);
     char getLetter() const;
 
     virtual int complexity();
@@ -36,11 +36,11 @@ protected:
     void addInClosedList(ClosedList& list, char letter);
     
 private:
-    bool _value;
+    xbool _value;
     bool _evaluate; //a-t-on deja calculé la valeur ?
     bool _compEvaluate; //est-on en train d'evaluer la difficulté
     const char _let; // la lettre
-    FuncList _boolFuncList; // liste triee des fonction qui peuvent donné la valeur
+    FuncList _boolFuncList; // liste triee des fonction qui donne la valeur
 };
 
 #endif	/* NODE_H */

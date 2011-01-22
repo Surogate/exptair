@@ -9,6 +9,7 @@
 #define	OPER_H
 
 #include "Singleton.hpp"
+#include "xbool.hpp"
 
 class Node;
 
@@ -16,6 +17,7 @@ class Node;
 class Oper {
 public:
     virtual ~Oper() {}
+    virtual int forward(xbool a, xbool b) const = 0;
     virtual bool operator()(Node& a, Node& b) const = 0;
     virtual int complexity() const = 0;
     virtual Oper* clone() = 0;
@@ -23,6 +25,7 @@ public:
 
 class And : public Oper, public Singleton<And> {
     SINGLETON_CLASS(And)
+    int forward(xbool a, xbool b) const;
     bool operator()(Node& a, Node& b) const;
     int complexity() const;
     Oper* clone();
@@ -30,6 +33,7 @@ class And : public Oper, public Singleton<And> {
 
 class Or : public Oper, public Singleton<Or> {
     SINGLETON_CLASS(Or)
+    int forward(xbool a, xbool b) const;
     bool operator()(Node& a, Node& b) const;
     int complexity() const;
     Oper* clone();

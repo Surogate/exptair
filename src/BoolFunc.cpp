@@ -31,32 +31,27 @@ int BoolFunc::forward(ClosedList* list) {
         ClosedList _list;
         return this->forward(&_list);
     }
+    if (_operand.size() == 1)
+        return _operand.front()->forward(list);
 
+    OperatorCont::iterator it = _operator.begin();
+    OperatorCont::iterator ite = _operator.end();
 
-    if (_operand.size() > 1 && _operator.size() > 0) {
-        OperatorCont::iterator it = _operator.begin();
-        OperatorCont::iterator ite = _operator.end();
+    NodeCont::iterator itx = _operand.begin();
+    NodeCont::iterator itxe = _operand.end();
 
-        NodeCont::iterator itxb = ++_operand.begin();
-        NodeCont::iterator itxe = _operand.end();
+    xbool result = itx->forward(list);
+    itx++;
 
-        Node result = (*_operand.begin())->operator ()();
+    while (it != ite && itx != itxe) {
+        result = it->forward(result, *itx);
 
-        while (it != ite && itxb != itxe) {
-            result = (*it)->operator ()(result, *(*itxb));
-            ++it;
-        }
-        return result();
+        
+
+        ++it;
+        ++itx;
     }
-    if (_operand.size() == 1) {
-        return (*_operand.begin())->operator ()();
-    }
-    return false;
-}
 
-// on tente d'evaluer la valeur final de l'equation
-
-bool BoolFunc::operator ()() {
     if (_operand.size() > 1 && _operator.size() > 0) {
         OperatorCont::iterator it = _operator.begin();
         OperatorCont::iterator ite = _operator.end();
