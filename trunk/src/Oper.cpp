@@ -8,6 +8,7 @@
 #include "Oper.h"
 #include "Node.h"
 #include "AParser.hpp"
+#include "xbool.hpp"
 
 xbool And::forward(xbool a, xbool b) const {
     if (a == xreevaluate || b == xreevaluate)
@@ -19,9 +20,6 @@ xbool And::forward(xbool a, xbool b) const {
     return xfalse;
 }
 
-bool And::operator()(Node& a, Node& b) const {
-    return a() && b();
-}
 
 int And::complexity() const {
     return 1;
@@ -34,10 +32,7 @@ Oper* And::clone() {
 xbool Or::forward(xbool a, xbool b) const {
     if (a == xtrue || b == xtrue)
         return xtrue;
-}
-
-bool Or::operator ()(Node& a, Node& b) const {
-    return a() || b();
+    return xfalse;
 }
 
 int Or::complexity() const {

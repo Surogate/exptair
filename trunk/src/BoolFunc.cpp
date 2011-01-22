@@ -6,6 +6,7 @@
  */
 
 #include "BoolFunc.h"
+#include "xbool.hpp"
 
 BoolFunc::BoolFunc() {
 }
@@ -26,7 +27,7 @@ BoolFunc& BoolFunc::operator =(const BoolFunc& orig) {
     return *this;
 }
 
-int BoolFunc::forward(ClosedList* list) {
+xbool BoolFunc::forward(ClosedList* list) {
     if (!list) {
         ClosedList _list;
         return this->forward(&_list);
@@ -40,37 +41,19 @@ int BoolFunc::forward(ClosedList* list) {
     NodeCont::iterator itx = _operand.begin();
     NodeCont::iterator itxe = _operand.end();
 
-    xbool result = itx->forward(list);
+    xbool result = (*itx)->forward(list);
     itx++;
 
     while (it != ite && itx != itxe) {
-        result = it->forward(result, *itx);
+        xbool tmp = (*itx)->forward(list);
+        result = (*it)->forward(result, tmp);
 
         
 
         ++it;
         ++itx;
     }
-
-    if (_operand.size() > 1 && _operator.size() > 0) {
-        OperatorCont::iterator it = _operator.begin();
-        OperatorCont::iterator ite = _operator.end();
-
-        NodeCont::iterator itxb = ++_operand.begin();
-        NodeCont::iterator itxe = _operand.end();
-
-        Node result = (*_operand.begin())->operator ()();
-
-        while (it != ite && itxb != itxe) {
-            result = (*it)->operator ()(result, *(*itxb));
-            ++it;
-        }
-        return result();
-    }
-    if (_operand.size() == 1) {
-        return (*_operand.begin())->operator ()();
-    }
-    return false;
+    return result;
 }
 
 //on evalue la difficulté a evaluer l'equation suivant les operator dedans
