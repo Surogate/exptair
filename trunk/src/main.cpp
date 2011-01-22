@@ -7,21 +7,21 @@
 
 #include <iostream>
 #include "Ai.h"
+#include "AParser.hpp"
 
 int main(int ac, char** av) {
     Ai topClass;
-
-    if (ac == 1) {
-        topClass.loadPath(av[1]);
-    }
-    else {
-        std::string path;
+    std::string path;
+    if (ac >= 2) {
+        path = av[ac - 1];
+    } else {
         std::cout << "base file path ?" << std::endl;
         std::cin >> path;
-        topClass.loadPath(path);
     }
-    topClass.forward();
-    topClass.backward();
+    if (topClass.loadPath(path)) {
+        topClass.forward();
+        topClass.backward();
+    }
     return 0;
 }
 

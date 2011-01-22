@@ -21,8 +21,9 @@ bool InputFileParser::parseFile(const std::string& filepath, Ai& to) {
         if (eof())
             return true;
         else
-            std::cout << "error at line" << getLineConsumed() << " letter " << getLetterPos() << std::endl;
-    }
+            std::cout << "error at line " << getLineConsumed() << " letter " << getLetterPos() << " letter value " << getTextIterator() << std::endl;
+    } else
+        std::cout << "cannot load " << filepath << std::endl;
     return false;
 }
 
@@ -30,7 +31,8 @@ bool InputFileParser::parseline(Ai& to) {
     BoolFunc func;
 
     if (parseBoolFunc(to, func)) {
-        if (consumeSpace()  && char_('=') && consumeSpace()) {
+        std::cout << "parse bool func ok" << std::endl;
+        if (consumeSpace() && char_('=') && consumeSpace()) {
             Node* node = parseNode(to);
             if (node) {
                 node->addBoolFunc(func);
@@ -54,8 +56,9 @@ bool InputFileParser::parseline(Ai& to) {
 bool InputFileParser::parseBoolFunc(Ai& to, BoolFunc& in) {
     Node* tmp = parseNode(to);
     if (tmp) {
+        std::cout <<  "parse Node ok" << std::endl;
         in.addOperand(*tmp);
-        Oper* op;
+        Oper* op = 0;
         while ((op = parseOper()) && (tmp = parseNode(to))) {
             in.addOperator(*op);
             in.addOperand(*tmp);
@@ -63,14 +66,15 @@ bool InputFileParser::parseBoolFunc(Ai& to, BoolFunc& in) {
         if (!op && !tmp)
             return true;
     }
+    std::cout << "parse bool fail" << std::endl;
     return false;
 }
 
 Node* InputFileParser::parseNode(Ai& to) {
-    std::string letter;
-    Node* node;
-    if (consumeSpace() && char_('A', 'Z', letter) && consumeSpace()) {
-        node = to.getNode(letter[0]);
+    if (consumeSpace() && peek('A', 'Z') && consumeSpace()) {
+        std::string letter;
+        char_('A', 'Z', letter);
+        Node* node = to.getNode(letter[0]);
         if (!node) {
             node = new Node(letter[0]);
             return node;
@@ -80,6 +84,9 @@ Node* InputFileParser::parseNode(Ai& to) {
 }
 
 Oper* InputFileParser::parseOper() {
+    OperatorMap::iterator it = _operMap.begin();
+    OperatorMap::iterator ite = _operMap.end();
+
     std::string letter;
     if (consumeSpace() && char_(letter) && consumeSpace()) {
         OperatorMap::iterator it = _operMap.find(letter);

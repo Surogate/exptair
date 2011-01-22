@@ -15,9 +15,7 @@ BoolFunc::BoolFunc(const BoolFunc& orig) : Node(orig), _operand(orig._operand), 
 }
 
 BoolFunc::~BoolFunc() {
-    for (unsigned int i = 0; i < _operator.size(); i++) {
-        delete _operator[i];
-    }
+    
 }
 
 BoolFunc& BoolFunc::operator =(const BoolFunc& orig) {
@@ -45,11 +43,7 @@ xbool BoolFunc::forward(ClosedList* list) {
     itx++;
 
     while (it != ite && itx != itxe) {
-        xbool tmp = (*itx)->forward(list);
-        result = (*it)->forward(result, tmp);
-
-        
-
+        result = (*it)->forward(result, (*itx)->forward(list));
         ++it;
         ++itx;
     }
@@ -74,7 +68,7 @@ int BoolFunc::complexity() {
 }
 
 void BoolFunc::addOperator(Oper& op) {
-    _operator.push_back(op.clone());
+    _operator.push_back(&op);
 }
 
 void BoolFunc::addOperand(Node& no) {
