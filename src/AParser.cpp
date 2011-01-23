@@ -68,7 +68,7 @@ bool AParser::char_(char from, char to, std::string& in) {
     return false;
 }
 
-bool AParser::readQuotedText(std::string text) {
+bool AParser::readQuotedText(const std::string& text) {
     if (char_('"') && readText(text) && char_('"')) {
         return true;
     }
@@ -76,7 +76,7 @@ bool AParser::readQuotedText(std::string text) {
     return false;
 }
 
-bool AParser::readText(std::string textConsumed) {
+bool AParser::readText(const std::string& textConsumed) {
     unsigned int tmp = _iterator;
     for (unsigned int i = 0; i < textConsumed.size(); i++)
     {
@@ -89,7 +89,7 @@ bool AParser::readText(std::string textConsumed) {
     return true;
 }
 
-bool AParser::readIdentifier(std::string& in) {
+bool AParser::readQuotedTextIn(std::string& in) {
     unsigned int tmp = _iterator;
     if (char_('"'))
     {
