@@ -68,8 +68,6 @@ void Node::operator=(xbool val) {
 }
 
 xbool Node::forward(ClosedList* list) {
-    char let = getLetter();
-
     if (_evaluate)
         return _value;
 
@@ -101,6 +99,39 @@ xbool Node::forward(ClosedList* list) {
     }
 }
 
+xbool Node::backward(ClosedList* list) {
+    if (_evaluate)
+        return _value;
+
+    if (!list) {
+        ClosedList _list;
+        return this->forward(&_list);
+    }
+
+    if (list->find(_let) == list->end()) {
+        FuncList::iterator it = _boolFuncList.begin();
+        FuncList::iterator ite = _boolFuncList.end();
+        xbool answer = xundefined;
+
+        list->operator [](_let) = true;
+        while (it != ite) {
+            xbool result = it->forward(list);
+
+            if (result == xfalse)
+                answer = xfalse;
+            if (result == xtrue) {
+                this->operator =(xtrue);
+                return xtrue;
+            }
+            ++it;
+        }
+        if (answer == xundefined) {
+            return askUserToDefine();
+        }
+        return answer;
+    }
+    return askUserToDefine();
+}
 
 // on evalue la dificulte d'evaluer une node
 
@@ -128,4 +159,20 @@ int Node::complexity() {
 
 void Node::addInClosedList(ClosedList& list, char letter) {
     list[letter] = true;
+}
+
+xbool Node::askUserToDefine() {
+    std::string userInput;
+    std::cout << "event " << _let << "is not know, could you evaluate ? (true, false)" << std::endl;
+    while (!_evaluate) {
+        std::cin >> userInput;
+        if (userInput == "true") {
+            this->operator =(xtrue);
+        } else if (userInput == "false") {
+            this->operator =(xfalse);
+        } else {
+            std::cout << "please answer with True or False" << std::endl;
+        }
+    }
+    return _value;
 }

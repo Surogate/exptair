@@ -43,7 +43,32 @@ xbool BoolFunc::forward(ClosedList* list) {
     itx++;
 
     while (it != ite && itx != itxe) {
-        result = (*it)->forward(result, (*itx)->forward(list));
+        result = (*it)->execute(result, (*itx)->forward(list));
+        ++it;
+        ++itx;
+    }
+    return result;
+}
+
+xbool BoolFunc::backward(ClosedList* list) {
+    if (!list) {
+        ClosedList _list;
+        return this->backward(&_list);
+    }
+    if (_operand.size() == 1)
+        return _operand.front()->backward(list);
+
+    OperatorCont::iterator it = _operator.begin();
+    OperatorCont::iterator ite = _operator.end();
+
+    NodeCont::iterator itx = _operand.begin();
+    NodeCont::iterator itxe = _operand.end();
+
+    xbool result = (*itx)->backward(list);
+    itx++;
+
+    while (it != ite && itx != itxe) {
+        result = (*it)->execute(result, (*itx)->backward(list));
         ++it;
         ++itx;
     }

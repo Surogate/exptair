@@ -30,7 +30,7 @@ bool AParser::loadPath(const std::string& path) {
     return false;
 }
 
-void AParser::setText(std::string& str) {
+void AParser::setText(const std::string& str) {
     _file = str;
     _iterator = 0;
     _size = _file.size();

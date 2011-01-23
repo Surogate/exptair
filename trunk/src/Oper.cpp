@@ -10,7 +10,7 @@
 #include "AParser.hpp"
 #include "xbool.hpp"
 
-xbool And::forward(xbool a, xbool b) const {
+xbool And::execute(xbool a, xbool b) const {
     if (a == xreevaluate || b == xreevaluate)
         return xreevaluate;
     if (a == xundefined || b == xundefined)
@@ -24,7 +24,7 @@ int And::complexity() const {
     return 1;
 }
 
-xbool Or::forward(xbool a, xbool b) const {
+xbool Or::execute(xbool a, xbool b) const {
     if (a == xtrue || b == xtrue)
         return xtrue;
     if (a == xreevaluate || b == xreevaluate)

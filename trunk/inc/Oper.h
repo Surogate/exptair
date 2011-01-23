@@ -17,19 +17,19 @@ class Node;
 class Oper {
 public:
     virtual ~Oper() {}
-    virtual xbool forward(xbool a, xbool b) const = 0;
+    virtual xbool execute(xbool a, xbool b) const = 0;
     virtual int complexity() const = 0;
 };
 
 class And : public Oper, public Singleton<And> {
     SINGLETON_CLASS(And)
-    xbool forward(xbool a, xbool b) const;
+    xbool execute(xbool a, xbool b) const;
     int complexity() const;
 };
 
 class Or : public Oper, public Singleton<Or> {
     SINGLETON_CLASS(Or)
-    xbool forward(xbool a, xbool b) const;
+    xbool execute(xbool a, xbool b) const;
     int complexity() const;
 };
 
