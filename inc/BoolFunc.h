@@ -26,6 +26,7 @@ public:
 
     BoolFunc& operator =(const BoolFunc& orig);
     xbool forward(ClosedList* list = 0);
+    xbool backward(ClosedList* list = 0);
     int complexity();
     void addOperator(Oper& op);
     void addOperand(Node& no);

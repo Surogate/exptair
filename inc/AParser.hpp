@@ -13,7 +13,7 @@
 class AParser {
 public:
     bool loadPath(const std::string& path);
-    void setText(std::string& str);
+    void setText(const std::string& str);
     inline bool eof();
     inline bool peek(const char c);
     inline bool peek(const char a, const char b);

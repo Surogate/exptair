@@ -28,10 +28,12 @@ public:
     
     void addBoolFunc(BoolFunc& func);
     virtual xbool forward(ClosedList* list = 0);
+    virtual xbool backward(ClosedList* list = 0);
     void operator=(xbool);
     char getLetter() const;
 
     virtual int complexity();
+
 protected:
     void addInClosedList(ClosedList& list, char letter);
     
@@ -41,6 +43,8 @@ private:
     bool _compEvaluate; //est-on en train d'evaluer la difficulté
     const char _let; // la lettre
     FuncList _boolFuncList; // liste triee des fonction qui donne la valeur
+
+    xbool askUserToDefine();
 };
 
 #endif	/* NODE_H */
