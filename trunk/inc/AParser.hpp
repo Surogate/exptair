@@ -15,14 +15,15 @@ public:
     bool loadPath(const std::string& path);
     void setText(std::string& str);
     inline bool eof();
-    inline bool peek(char c);
-    inline bool peek(char a, char b);
-    inline bool char_(char c);
+    inline bool peek(const char c);
+    inline bool peek(const char a, const char b);
+    inline bool char_(const char c);
     bool char_(std::string& in);
-    bool char_(char c, std::string& in);
-    bool char_(char from, char to, std::string& in);
-    bool readQuotedText(const std::string& text);
-    bool readText(const std::string& text);
+    bool char_(const char c, std::string& in);
+    bool char_(const char from, const char to, std::string& in);
+    bool char_(const char from, const char to, char& in);
+    bool readQuotedText(const std::string& textToConsumed);
+    bool readText(const std::string& textToConsumed);
     bool readQuotedTextIn(std::string& in);
     bool readInt(int& in);
     bool readInt(unsigned int& in);
@@ -47,7 +48,7 @@ inline bool AParser::eof() {
     return (_iterator >= _size);
 }
 
-inline bool AParser::peek(char c) {
+inline bool AParser::peek(const char c) {
     if (!eof())
         return (_file[_iterator] == c);
     return false;

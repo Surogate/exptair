@@ -8,7 +8,7 @@
 #include "BoolFunc.h"
 #include "xbool.hpp"
 
-BoolFunc::BoolFunc() {
+BoolFunc::BoolFunc() : Node() {
 }
 
 BoolFunc::BoolFunc(const BoolFunc& orig) : Node(orig), _operand(orig._operand), _operator(orig._operator) {
