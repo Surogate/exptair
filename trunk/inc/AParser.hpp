@@ -68,7 +68,7 @@ inline bool AParser::char_(char c) {
 }
 
 inline bool AParser::consumeNewLine() {
-    if (char_('\n')) {
+    if (readText("\r\n") || char_('\n') || char_('\r')) {
         ++_lineConsumed;
         _letterPos = _iterator;
         return true;
@@ -78,12 +78,12 @@ inline bool AParser::consumeNewLine() {
 
 inline bool AParser::consumeSpace() {
     while (char_(' ') || char_('\t'));
-    return true;
+    return !eof();
 }
 
 inline bool AParser::consumeBlanks() {
-    while (char_(' ') || char_('\t') || consumeNewLine());
-    return true;
+    while (consumeSpace() || consumeNewLine());
+    return !eof();
 }
 
 #endif	/* APARSER_HPP */

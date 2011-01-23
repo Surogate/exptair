@@ -17,10 +17,7 @@ InputFileParser::InputFileParser() {
 
 bool InputFileParser::parseFile(const std::string& filepath, Ai& to) {
     if (loadPath(filepath)) {
-        if (parseline(to) && consumeNewLine()) {
-            std::cout << "caca" << std::endl;
-            while (parseline(to) && consumeNewLine());
-        }
+        while (parseline(to) && consumeNewLine());
         if (eof())
             return true;
         else
@@ -34,17 +31,16 @@ bool InputFileParser::parseline(Ai& to) {
     BoolFunc func;
 
     if (parseBoolFunc(to, func)) {
-        if (consumeSpace() && char_('=') && consumeSpace()) {
+        if (char_('=')) {
             Node* node = parseNode(to);
             if (node) {
                 node->addBoolFunc(func);
                 to.addNode(node);
-                std::cout << "parse line ok" << std::endl;
                 return true;
             }
         }
     } else {
-        if (consumeSpace() && char_('=') && consumeSpace()) {
+        if (char_('=')) {
             Node* node = parseNode(to);
             if (node) {
                 node->operator =(true);
@@ -75,7 +71,7 @@ bool InputFileParser::parseBoolFunc(Ai& to, BoolFunc& in) {
 }
 
 Node* InputFileParser::parseNode(Ai& to) {
-    if (consumeSpace() && peek('A', 'Z')) {
+    if (peek('A', 'Z')) {
         std::string letter;
         char_('A', 'Z', letter);
         std::cout << "parse node " << letter << std::endl;
