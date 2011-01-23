@@ -21,9 +21,9 @@ public:
     bool char_(std::string& in);
     bool char_(char c, std::string& in);
     bool char_(char from, char to, std::string& in);
-    bool readQuotedText(std::string text);
-    bool readText(std::string text);
-    bool readIdentifier(std::string& in);
+    bool readQuotedText(const std::string& text);
+    bool readText(const std::string& text);
+    bool readQuotedTextIn(std::string& in);
     bool readInt(int& in);
     bool readInt(unsigned int& in);
     bool readFloat(float& in);
@@ -82,7 +82,7 @@ inline bool AParser::consumeSpace() {
 }
 
 inline bool AParser::consumeBlanks() {
-    while (consumeSpace() || consumeNewLine());
+    while (char_(' ') || char_('\t') || consumeNewLine());
     return true;
 }
 

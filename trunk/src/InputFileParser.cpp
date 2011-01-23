@@ -17,7 +17,10 @@ InputFileParser::InputFileParser() {
 
 bool InputFileParser::parseFile(const std::string& filepath, Ai& to) {
     if (loadPath(filepath)) {
-        while (parseline(to) && consumeNewLine() && !eof());
+        if (parseline(to) && consumeNewLine()) {
+            std::cout << "caca" << std::endl;
+            while (parseline(to) && consumeNewLine());
+        }
         if (eof())
             return true;
         else
@@ -31,12 +34,12 @@ bool InputFileParser::parseline(Ai& to) {
     BoolFunc func;
 
     if (parseBoolFunc(to, func)) {
-        std::cout << "parse bool func ok" << std::endl;
         if (consumeSpace() && char_('=') && consumeSpace()) {
             Node* node = parseNode(to);
             if (node) {
                 node->addBoolFunc(func);
                 to.addNode(node);
+                std::cout << "parse line ok" << std::endl;
                 return true;
             }
         }
@@ -56,24 +59,26 @@ bool InputFileParser::parseline(Ai& to) {
 bool InputFileParser::parseBoolFunc(Ai& to, BoolFunc& in) {
     Node* tmp = parseNode(to);
     if (tmp) {
-        std::cout <<  "parse Node ok" << std::endl;
         in.addOperand(*tmp);
-        Oper* op = 0;
-        while ((op = parseOper()) && (tmp = parseNode(to))) {
+        Oper* op = parseOper();
+        tmp = parseNode(to);
+        while (op && tmp) {
             in.addOperator(*op);
             in.addOperand(*tmp);
+            op = parseOper();
+            tmp = parseNode(to);
         }
         if (!op && !tmp)
             return true;
     }
-    std::cout << "parse bool fail" << std::endl;
     return false;
 }
 
 Node* InputFileParser::parseNode(Ai& to) {
-    if (consumeSpace() && peek('A', 'Z') && consumeSpace()) {
+    if (consumeSpace() && peek('A', 'Z')) {
         std::string letter;
         char_('A', 'Z', letter);
+        std::cout << "parse node " << letter << std::endl;
         Node* node = to.getNode(letter[0]);
         if (!node) {
             node = new Node(letter[0]);
@@ -87,12 +92,12 @@ Oper* InputFileParser::parseOper() {
     OperatorMap::iterator it = _operMap.begin();
     OperatorMap::iterator ite = _operMap.end();
 
-    std::string letter;
-    if (consumeSpace() && char_(letter) && consumeSpace()) {
-        OperatorMap::iterator it = _operMap.find(letter);
-        if (it != _operMap.end()) {
+    while (it != ite) {
+        if (consumeSpace() && readText(it->first) && consumeSpace()) {
+            std::cout << "operator " << it->first << std::endl;
             return it->second;
         }
+        ++it;
     }
     return 0;
 }
