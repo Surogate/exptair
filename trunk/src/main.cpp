@@ -9,6 +9,9 @@
 #include "Ai.h"
 #include "AParser.hpp"
 
+// bon il reste a faire le chainage arriere,
+//a gérée le fait d'avoir une expression type A*B=C*D (actuellement il te vomit si tu met plus d'une lettre en sortie)
+
 int main(int ac, char** av) {
     Ai topClass;
     std::string path;

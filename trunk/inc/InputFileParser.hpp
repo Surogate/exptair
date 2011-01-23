@@ -18,8 +18,9 @@ public:
 
     InputFileParser();
     bool parseFile(const std::string& filepath, Ai& to);
+    bool parseLine(const std::string& line, Ai& to);
 private:
-    bool parseline(Ai& to);
+    bool parseLine(Ai& to);
     bool parseBoolFunc(Ai& to, BoolFunc& in);
     Node* parseNode(Ai& to);
     Oper* parseOper();
