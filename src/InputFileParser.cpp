@@ -43,7 +43,7 @@ bool InputFileParser::parseline(Ai& to) {
         if (char_('=')) {
             Node* node = parseNode(to);
             if (node) {
-                node->operator =(true);
+                node->operator =(xtrue);
                 to.addNode(node);
                 return true;
             }
@@ -71,15 +71,14 @@ bool InputFileParser::parseBoolFunc(Ai& to, BoolFunc& in) {
 }
 
 Node* InputFileParser::parseNode(Ai& to) {
-    if (peek('A', 'Z')) {
-        std::string letter;
-        char_('A', 'Z', letter);
-        std::cout << "parse node " << letter << std::endl;
-        Node* node = to.getNode(letter[0]);
+    char letter;
+    if (char_('A', 'Z', letter)) {
+        Node* node = to.getNode(letter);
         if (!node) {
-            node = new Node(letter[0]);
-            return node;
+            node = new Node(letter);
+            to.addNode(node);
         }
+        return node;
     }
     return 0;
 }
@@ -90,7 +89,6 @@ Oper* InputFileParser::parseOper() {
 
     while (it != ite) {
         if (consumeSpace() && readText(it->first) && consumeSpace()) {
-            std::cout << "operator " << it->first << std::endl;
             return it->second;
         }
         ++it;

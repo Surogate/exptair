@@ -7,6 +7,7 @@
 
 #include <list>
 #include <map>
+#include <iostream>
 
 
 #include "Node.h"
@@ -15,7 +16,7 @@
 Node::Node() : _value(xundefined), _evaluate(false), _let(0) {
 }
 
-Node::Node(const char letter) : _value(xundefined), _let(letter) {
+Node::Node(const char letter) : _value(xundefined), _evaluate(false), _let(letter) {
 }
 
 Node::Node(const Node& orig) : _let(orig._let) {
@@ -67,26 +68,27 @@ void Node::operator=(xbool val) {
 }
 
 xbool Node::forward(ClosedList* list) {
+    char let = getLetter();
+
     if (_evaluate)
         return _value;
-
-    FuncList::iterator it = _boolFuncList.begin();
-    FuncList::iterator ite = _boolFuncList.begin();
 
     if (!list) {
         ClosedList _list;
         return this->forward(&_list);
     }
-    
+
     if (list->find(_let) == list->end()) {
-        xbool answer = xfalse;
+        FuncList::iterator it = _boolFuncList.begin();
+        FuncList::iterator ite = _boolFuncList.end();
+        xbool answer = xundefined;
 
         list->operator [](_let) = true;
         while (it != ite) {
             xbool result = it->forward(list);
 
-            if (result == xundefined)
-                answer = xundefined;
+            if (result == xfalse)
+                answer = xfalse;
             if (result == xtrue) {
                 this->operator =(xtrue);
                 return xtrue;

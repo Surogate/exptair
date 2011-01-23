@@ -6,6 +6,7 @@
  */
 
 #include <map>
+#include <iostream>
 
 #include "Ai.h"
 #include "Node.h"
@@ -47,8 +48,22 @@ void Ai::forward()  {
         } else {
             nodeUnde.push_back(letter);
         }
-
         ++it;
+    }
+
+    std::cout << "True" << std::endl;
+    for(unsigned int i = 0; i < nodeTrue.size(); i++) {
+        std::cout << nodeTrue[i] << " ";
+    }
+    std::cout << std::endl;
+    std::cout << "False" << std::endl;
+    for(unsigned int i = 0; i < nodeFalse.size(); i++) {
+        std::cout << nodeFalse[i] << " ";
+    }
+    std::cout << std::endl;
+    std::cout << "Undefined" << std::endl;
+    for(unsigned int i = 0; i < nodeUnde.size(); i++) {
+        std::cout << nodeUnde[i] << " ";
     }
 }
 

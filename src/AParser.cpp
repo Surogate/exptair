@@ -48,7 +48,7 @@ bool AParser::char_(std::string& in) {
     return false;
 }
 
-bool AParser::char_(char c, std::string& in) {
+bool AParser::char_(const char c, std::string& in) {
     if (peek(c))
     {
         in += _file[_iterator];
@@ -58,10 +58,19 @@ bool AParser::char_(char c, std::string& in) {
     return false;
 }
 
-bool AParser::char_(char from, char to, std::string& in) {
+bool AParser::char_(const char from, const char to, std::string& in) {
     if (peek(from, to))
     {
         in += _file[_iterator];
+        ++_iterator;
+        return true;
+    }
+    return false;
+}
+
+bool AParser::char_(const char from, const char to, char& in) {
+    if (peek(from, to)) {
+        in = _file[_iterator];
         ++_iterator;
         return true;
     }
