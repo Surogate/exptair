@@ -17,7 +17,7 @@ InputFileParser::InputFileParser() {
 
 bool InputFileParser::parseFile(const std::string& filepath, Ai& to) {
     if (loadPath(filepath)) {
-        while (parseline(to) && consumeNewLine());
+        while (parseLine(to) && consumeNewLine());
         if (eof())
             return true;
         else
@@ -27,7 +27,12 @@ bool InputFileParser::parseFile(const std::string& filepath, Ai& to) {
     return false;
 }
 
-bool InputFileParser::parseline(Ai& to) {
+bool InputFileParser::parseLine(const std::string& line, Ai& to) {
+    setText(line);
+    return parseLine(to);
+}
+
+bool InputFileParser::parseLine(Ai& to) {
     BoolFunc func;
 
     if (parseBoolFunc(to, func)) {

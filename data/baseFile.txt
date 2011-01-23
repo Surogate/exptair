@@ -1,5 +1,4 @@
-A*B*C=D
-A*C=E
+A*C=D
+A*D=C
 =A
 =B
-=C

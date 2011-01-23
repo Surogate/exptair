@@ -65,6 +65,7 @@ void Ai::forward()  {
     for(unsigned int i = 0; i < nodeUnde.size(); i++) {
         std::cout << nodeUnde[i] << " ";
     }
+    std::cout << std::endl;
 }
 
 void Ai::backward() {
