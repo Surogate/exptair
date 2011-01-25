@@ -33,23 +33,21 @@ bool InputFileParser::parseLine(const std::string& line, Ai& to) {
 }
 
 bool InputFileParser::parseLine(Ai& to) {
-    BoolFunc func;
+    BoolFunc left;
 
-    if (parseBoolFunc(to, func)) {
+    if (parseBoolFunc(to, left)) {
         if (char_('=')) {
-            Node* node = parseNode(to);
-            if (node) {
-                node->addBoolFunc(func);
-                to.addNode(node);
+            BoolFunc right;
+            if (parseBoolFunc(to, right)) {
+                right.addBoolFunc(left);
                 return true;
             }
         }
     } else {
         if (char_('=')) {
-            Node* node = parseNode(to);
-            if (node) {
-                node->operator =(xtrue);
-                to.addNode(node);
+            BoolFunc right;
+            if (parseBoolFunc(to, right)) {
+                right = xtrue;
                 return true;
             }
         }

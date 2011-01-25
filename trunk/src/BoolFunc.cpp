@@ -15,7 +15,7 @@ BoolFunc::BoolFunc(const BoolFunc& orig) : Node(orig), _operand(orig._operand), 
 }
 
 BoolFunc::~BoolFunc() {
-    
+
 }
 
 BoolFunc& BoolFunc::operator =(const BoolFunc& orig) {
@@ -23,6 +23,16 @@ BoolFunc& BoolFunc::operator =(const BoolFunc& orig) {
     _operand = orig._operand;
     _operator = orig._operator;
     return *this;
+}
+
+void BoolFunc::operator =(xbool value) {
+    NodeCont::iterator it = _operand.begin();
+    NodeCont::iterator ite = _operand.end();
+
+    while (it != ite) {
+        (*it)->operator =(value);
+        ++it;
+    }
 }
 
 xbool BoolFunc::forward(ClosedList* list) {
@@ -98,4 +108,22 @@ void BoolFunc::addOperator(Oper& op) {
 
 void BoolFunc::addOperand(Node& no) {
     _operand.push_back(&no);
+}
+
+void BoolFunc::addBoolFunc(BoolFunc& func) {
+    NodeCont::iterator it = _operand.begin();
+    NodeCont::iterator ite = _operand.end();
+
+    OperatorCont::iterator itx = _operator.begin();
+    OperatorCont::iterator itxe = _operator.end();
+
+    if (_operand.size() == 1) {
+        (*it)->addBoolFunc(func);
+        return;
+    }
+
+    while (it != ite && itx != itxe && (*itx)->getCode() == AND) {
+        (*it)->addBoolFunc(func);
+        ++it;
+    }
 }

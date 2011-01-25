@@ -44,20 +44,7 @@ char Node::getLetter() const {
 // ajoute une regle dans la liste, suivant sa complexite
 
 void Node::addBoolFunc(BoolFunc& func) {
-    int complexity = func.complexity();
-
-    FuncList::iterator it = _boolFuncList.begin();
-    FuncList::iterator ite = _boolFuncList.end();
-
-    while (it != ite && it->complexity() < complexity) {
-        ++it;
-    }
-
-    if (it != ite) {
-        _boolFuncList.insert(it, func);
-    } else {
-        _boolFuncList.push_back(func);
-    }
+    _boolFuncList[func.complexity()] = func;
 }
 
 //on assigne une valeur par defaut a une node
@@ -83,7 +70,7 @@ xbool Node::forward(ClosedList* list) {
 
         list->operator [](_let) = true;
         while (it != ite) {
-            xbool result = it->forward(list);
+            xbool result = it->second.forward(list);
 
             if (result == xfalse)
                 answer = xfalse;
@@ -115,7 +102,7 @@ xbool Node::backward(ClosedList* list) {
 
         list->operator [](_let) = true;
         while (it != ite) {
-            xbool result = it->forward(list);
+            xbool result = it->second.forward(list);
 
             if (result == xfalse)
                 answer = xfalse;
@@ -148,8 +135,8 @@ int Node::complexity() {
         FuncList::iterator ite = _boolFuncList.end();
 
         while (it != ite) {
-            if (comp < it->complexity())
-                comp = it->complexity();
+            if (comp < it->second.complexity())
+                comp = it->second.complexity();
             ++it;
         }
         _compEvaluate = false;
