@@ -17,19 +17,21 @@ class BoolFunc;
 //Les variable booléenne 
 class Node {
 public:
-    typedef std::list<BoolFunc> FuncList;
+    typedef std::map<int, BoolFunc> FuncList;
     typedef std::map<char, bool> ClosedList;
 
     Node();
     Node(const char letters);
     Node(const Node& orig);
     virtual ~Node();
+
     Node& operator=(const Node& orig);
     
-    void addBoolFunc(BoolFunc& func);
+    virtual void addBoolFunc(BoolFunc& func);
     virtual xbool forward(ClosedList* list = 0);
     virtual xbool backward(ClosedList* list = 0);
-    void operator=(xbool);
+
+    virtual void operator=(xbool);
     char getLetter() const;
 
     virtual int complexity();

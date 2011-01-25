@@ -15,5 +15,10 @@ enum xbool {
     xreevaluate = -2
 };
 
+enum operCode {
+    AND,
+    OR
+};
+
 #endif	/* XBOOL_HPP */
 

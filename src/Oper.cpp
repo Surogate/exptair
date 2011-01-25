@@ -24,6 +24,10 @@ int And::complexity() const {
     return 1;
 }
 
+operCode And::getCode() const {
+    return AND;
+}
+
 xbool Or::execute(xbool a, xbool b) const {
     if (a == xtrue || b == xtrue)
         return xtrue;
@@ -37,3 +41,8 @@ xbool Or::execute(xbool a, xbool b) const {
 int Or::complexity() const {
     return 2;
 }
+
+operCode Or::getCode() const {
+    return OR;
+}
+

@@ -9,8 +9,13 @@
 #include "Ai.h"
 #include "AParser.hpp"
 
+// --------
 // bon il reste a faire le chainage arriere,
-//a gérée le fait d'avoir une expression type A*B=C*D (actuellement il te vomit si tu met plus d'une lettre en sortie)
+// l'idée serais de parcourire les BoolFunc et de trouver les combinaisons de lettres manquantes pour que la Node soit true
+// --------
+// actuellement on gere le cas A*B=C*D mais pas si l'expression de droite contient un/des OR
+// c'est due au fait qu'on ne gere pas l'operateur unaire NOT ( "!A" => NOT(A) )
+// voir si on peut modifier la façon dont les BoolFunc sont stocker et interpreté pour prendre en compte NOT
 
 int main(int ac, char** av) {
     Ai topClass;

@@ -25,9 +25,11 @@ public:
     virtual ~BoolFunc();
 
     BoolFunc& operator =(const BoolFunc& orig);
+    void operator =(xbool);
     xbool forward(ClosedList* list = 0);
     xbool backward(ClosedList* list = 0);
     int complexity();
+    void addBoolFunc(BoolFunc& func);
     void addOperator(Oper& op);
     void addOperand(Node& no);
 private:
