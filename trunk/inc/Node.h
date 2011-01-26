@@ -10,6 +10,7 @@
 
 #include <list>
 #include <map>
+#include <set>
 #include "xbool.hpp"
 
 class BoolFunc;
@@ -17,7 +18,7 @@ class BoolFunc;
 //Les variable booléenne 
 class Node {
 public:
-    typedef std::map<int, BoolFunc> FuncList;
+    typedef std::list<BoolFunc> FuncList;
     typedef std::map<char, bool> ClosedList;
 
     Node();
@@ -34,7 +35,7 @@ public:
     virtual void operator=(xbool);
     char getLetter() const;
 
-    virtual int complexity();
+    virtual int complexity() const;
 
 protected:
     void addInClosedList(ClosedList& list, char letter);
