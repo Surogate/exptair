@@ -35,6 +35,10 @@ void BoolFunc::operator =(xbool value) {
     }
 }
 
+bool BoolFunc::operator <(const BoolFunc& comp) const {
+    return (complexity() < comp.complexity());
+}
+
 xbool BoolFunc::forward(ClosedList* list) {
     if (!list) {
         ClosedList _list;
@@ -87,7 +91,7 @@ xbool BoolFunc::backward(ClosedList* list) {
 
 //on evalue la difficulté a evaluer l'equation suivant les operator dedans
 
-int BoolFunc::complexity() {
+int BoolFunc::complexity() const {
     int result = 0;
 
     OperatorCont::const_iterator it = _operator.begin();
