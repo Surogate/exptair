@@ -33,6 +33,7 @@ public:
     void addBoolFunc(BoolFunc& func);
     void addOperator(Oper& op);
     void addOperand(Node& no);
+    bool containAPartOf(const BoolFunc& func) const;
 private:
     NodeCont _operand; 
     OperatorCont _operator;
