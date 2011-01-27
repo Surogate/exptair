@@ -35,7 +35,7 @@ void BoolFunc::operator =(xbool value) {
     }
 }
 
-bool BoolFunc::operator <(const BoolFunc& comp) const {
+bool BoolFunc::operator<(const BoolFunc& comp) const {
     return (complexity() < comp.complexity());
 }
 
@@ -130,4 +130,22 @@ void BoolFunc::addBoolFunc(BoolFunc& func) {
         (*it)->addBoolFunc(func);
         ++it;
     }
+}
+
+bool BoolFunc::containAPartOf(const BoolFunc& func) const {
+    NodeCont::const_iterator itx = func._operand.begin();
+    NodeCont::const_iterator itxe = func._operand.end();
+
+    while (itx != itxe) {
+        NodeCont::const_iterator it = _operand.begin();
+        NodeCont::const_iterator ite = _operand.end();
+
+        while (it != ite && (*itx)->getLetter() != (*it)->getLetter()){
+            ++it;
+        }
+        if (it == ite)
+            return false;
+        ++itx;
+    }
+    return true;
 }
