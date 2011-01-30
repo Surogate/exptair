@@ -22,6 +22,7 @@ public:
     virtual const T* getPtr() const = 0;
 };
 
+//this container clean his pointer when remplacing it or is delete
 template <typename T>
 class SafeContainer : IPtrContainer<T> {
 public:
@@ -82,6 +83,7 @@ private:
     T* _ptr;
 };
 
+//this container do not delete his pointer, so he can store stack allocated pointer
 template <typename T>
 class UnsafeContainer : IPtrContainer<T> {
 public:
