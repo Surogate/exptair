@@ -26,7 +26,7 @@ protected:
     }
 };
 
-#define SINGLETON_CLASS(CLASS) friend class Singleton<CLASS>;
+#define SINGLETON_CLASS(CLASS) friend class Singleton<CLASS>
 
 #endif	/* SINGLETON_HPP */
 
