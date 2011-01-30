@@ -11,13 +11,14 @@
 #include <vector>
 #include <list>
 
+#include "SmartPtr.hpp"
 #include "Node.h"
 #include "Oper.h"
 
 // fonction booleenne
 class BoolFunc : public Node {
 public:
-    typedef std::list<Node*> NodeCont;
+    typedef std::list< IPtrContainer<Node>* > NodeCont;
     typedef std::vector<Oper*> OperatorCont;
 
     BoolFunc();
@@ -34,9 +35,15 @@ public:
     void addOperator(Oper& op);
     void addOperand(Node& no);
     bool containAPartOf(const BoolFunc& func) const;
+    bool isStartByNot() const;
+    void setStartByNot(bool value);
+    
 private:
     NodeCont _operand; 
     OperatorCont _operator;
+    bool _startByNot;
+
+    void addSubBoolFunc(BoolFunc& func);
 };
 
 #endif	/* BOOLFUNC_H */

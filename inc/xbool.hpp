@@ -17,7 +17,9 @@ enum xbool {
 
 enum operCode {
     AND,
-    OR
+    OR,
+    ANDNOT,
+    ORNOT
 };
 
 #endif	/* XBOOL_HPP */

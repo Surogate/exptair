@@ -13,6 +13,8 @@
 InputFileParser::InputFileParser() {
     _operMap["*"] = &Singleton<And>::Instance();
     _operMap["+"] = &Singleton<Or>::Instance();
+    _operMap["*!"] = &Singleton<AndNot>::Instance();
+    _operMap["+!"] = &Singleton<OrNot>::Instance();
 }
 
 bool InputFileParser::parseFile(const std::string& filepath, Ai& to) {
@@ -56,6 +58,8 @@ bool InputFileParser::parseLine(Ai& to) {
 }
 
 bool InputFileParser::parseBoolFunc(Ai& to, BoolFunc& in) {
+    if (char_('!'))
+        in.setStartByNot(true);
     Node* tmp = parseNode(to);
     if (tmp) {
         in.addOperand(*tmp);

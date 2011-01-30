@@ -13,9 +13,14 @@
 
 class Node;
 
-// interface des operator possible
+namespace Not {
+    xbool execute(xbool a);
+};
+
+// interface des operator
 class Oper {
 public:
+
     virtual ~Oper() {}
     virtual xbool execute(xbool a, xbool b) const = 0;
     virtual int complexity() const = 0;
@@ -23,14 +28,28 @@ public:
 };
 
 class And : public Oper, public Singleton<And> {
-    SINGLETON_CLASS(And)
+    SINGLETON_CLASS(And);
     xbool execute(xbool a, xbool b) const;
     int complexity() const;
     operCode getCode() const;
 };
 
 class Or : public Oper, public Singleton<Or> {
-    SINGLETON_CLASS(Or)
+    SINGLETON_CLASS(Or);
+    xbool execute(xbool a, xbool b) const;
+    int complexity() const;
+    operCode getCode() const;
+};
+
+class AndNot : public Oper, public Singleton<AndNot> {
+    SINGLETON_CLASS(AndNot);
+    xbool execute(xbool a, xbool b) const;
+    int complexity() const;
+    operCode getCode() const;
+};
+
+class OrNot : public Oper, public Singleton<OrNot> {
+    SINGLETON_CLASS(OrNot);
     xbool execute(xbool a, xbool b) const;
     int complexity() const;
     operCode getCode() const;

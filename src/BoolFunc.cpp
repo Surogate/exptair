@@ -8,14 +8,19 @@
 #include "BoolFunc.h"
 #include "xbool.hpp"
 
-BoolFunc::BoolFunc() : Node() {
+BoolFunc::BoolFunc() : Node(), _startByNot(false) {
 }
 
 BoolFunc::BoolFunc(const BoolFunc& orig) : Node(orig), _operand(orig._operand), _operator(orig._operator) {
 }
 
 BoolFunc::~BoolFunc() {
+    NodeCont::iterator it = _operand.begin();
+    NodeCont::iterator ite = _operand.end();
 
+    while (it != ite) {
+        delete *it;
+    }
 }
 
 BoolFunc& BoolFunc::operator =(const BoolFunc& orig) {
@@ -30,7 +35,7 @@ void BoolFunc::operator =(xbool value) {
     NodeCont::iterator ite = _operand.end();
 
     while (it != ite) {
-        (*it)->operator =(value);
+        (*(*it))->operator =(value);
         ++it;
     }
 }
@@ -45,7 +50,7 @@ xbool BoolFunc::forward(ClosedList* list) {
         return this->forward(&_list);
     }
     if (_operand.size() == 1)
-        return _operand.front()->forward(list);
+        return (*_operand.front())->forward(list);
 
     OperatorCont::iterator it = _operator.begin();
     OperatorCont::iterator ite = _operator.end();
@@ -53,11 +58,13 @@ xbool BoolFunc::forward(ClosedList* list) {
     NodeCont::iterator itx = _operand.begin();
     NodeCont::iterator itxe = _operand.end();
 
-    xbool result = (*itx)->forward(list);
+    xbool result = (*(*itx))->forward(list);
+    if (isStartByNot())
+        result = Not::execute(result);
     itx++;
 
     while (it != ite && itx != itxe) {
-        result = (*it)->execute(result, (*itx)->forward(list));
+        result = (*it)->execute(result, (*(*itx))->forward(list));
         ++it;
         ++itx;
     }
@@ -70,7 +77,7 @@ xbool BoolFunc::backward(ClosedList* list) {
         return this->backward(&_list);
     }
     if (_operand.size() == 1)
-        return _operand.front()->backward(list);
+        return (*_operand.front())->backward(list);
 
     OperatorCont::iterator it = _operator.begin();
     OperatorCont::iterator ite = _operator.end();
@@ -78,11 +85,11 @@ xbool BoolFunc::backward(ClosedList* list) {
     NodeCont::iterator itx = _operand.begin();
     NodeCont::iterator itxe = _operand.end();
 
-    xbool result = (*itx)->backward(list);
+    xbool result = (*(*itx))->backward(list);
     itx++;
 
     while (it != ite && itx != itxe) {
-        result = (*it)->execute(result, (*itx)->backward(list));
+        result = (*it)->execute(result, (*(*itx))->backward(list));
         ++it;
         ++itx;
     }
@@ -111,7 +118,7 @@ void BoolFunc::addOperator(Oper& op) {
 }
 
 void BoolFunc::addOperand(Node& no) {
-    _operand.push_back(&no);
+    _operand.push_back(new SmartPtr<Node, UnsafeContainer<Node> >(&no));
 }
 
 void BoolFunc::addBoolFunc(BoolFunc& func) {
@@ -122,12 +129,12 @@ void BoolFunc::addBoolFunc(BoolFunc& func) {
     OperatorCont::iterator itxe = _operator.end();
 
     if (_operand.size() == 1) {
-        (*it)->addBoolFunc(func);
+        (*(*it))->addBoolFunc(func);
         return;
     }
 
     while (it != ite && itx != itxe && (*itx)->getCode() == AND) {
-        (*it)->addBoolFunc(func);
+        (*(*it))->addBoolFunc(func);
         ++it;
     }
 }
@@ -140,7 +147,7 @@ bool BoolFunc::containAPartOf(const BoolFunc& func) const {
         NodeCont::const_iterator it = _operand.begin();
         NodeCont::const_iterator ite = _operand.end();
 
-        while (it != ite && (*itx)->getLetter() != (*it)->getLetter()){
+        while (it != ite && (*(*itx))->getLetter() != (*(*it))->getLetter()){
             ++it;
         }
         if (it == ite)
@@ -148,4 +155,16 @@ bool BoolFunc::containAPartOf(const BoolFunc& func) const {
         ++itx;
     }
     return true;
+}
+
+bool BoolFunc::isStartByNot() const {
+    return _startByNot;
+}
+
+void BoolFunc::setStartByNot(bool value) {
+    _startByNot = value;
+}
+
+void BoolFunc::addSubBoolFunc(BoolFunc& func) {
+    _operand.push_back(new SmartPtr<Node>(&func) );
 }
