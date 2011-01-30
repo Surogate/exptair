@@ -20,9 +20,11 @@ public:
     virtual const T * operator-> () const = 0;
     virtual T* getPtr() = 0;
     virtual const T* getPtr() const = 0;
+    virtual IPtrContainer* clone() const = 0;
 };
 
 //this container clean his pointer when remplacing it or is delete
+
 template <typename T>
 class SafeContainer : IPtrContainer<T> {
 public:
@@ -79,11 +81,16 @@ public:
         return _ptr;
     }
 
+    IPtrContainer<T>* clone() const{
+        return new SafeContainer(*this);
+    }
+
 private:
     T* _ptr;
 };
 
 //this container do not delete his pointer, so he can store stack allocated pointer
+
 template <typename T>
 class UnsafeContainer : IPtrContainer<T> {
 public:
@@ -130,6 +137,10 @@ public:
 
     const T * operator-> () const {
         return _ptr;
+    }
+
+    IPtrContainer<T>* clone() const{
+        return new UnsafeContainer(*this);
     }
 
 private:
