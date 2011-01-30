@@ -16,17 +16,18 @@
 #include "Oper.h"
 
 // fonction booleenne
+
 class BoolFunc : public Node {
 public:
-    typedef IPtrContainer<Node> NodePtr;
-    typedef std::list< NodePtr* > NodeCont;
+    typedef IPtrContainer<Node> NodePtr; //abstrait les node alloué sur la stack et la heap
+    typedef std::list< NodePtr* > NodeCont; //list des node
     typedef std::vector<Oper*> OperatorCont;
 
     BoolFunc();
     BoolFunc(const BoolFunc& orig);
     virtual ~BoolFunc();
 
-    BoolFunc& operator =(const BoolFunc& orig);
+    BoolFunc & operator =(const BoolFunc& orig);
     void operator =(xbool);
     bool operator<(const BoolFunc&) const;
     xbool forward(ClosedList* list = 0);
@@ -38,13 +39,12 @@ public:
     bool containAPartOf(const BoolFunc& func) const;
     bool isStartByNot() const;
     void setStartByNot(bool value);
-    
+    void addDynBoolFunc(BoolFunc& func);
+
 private:
-    NodeCont _operand; 
+    NodeCont _operand;
     OperatorCont _operator;
     bool _startByNot;
-
-    void addSubBoolFunc(BoolFunc& func);
 };
 
 #endif	/* BOOLFUNC_H */

@@ -8,10 +8,18 @@
 #include "BoolFunc.h"
 #include "xbool.hpp"
 
-BoolFunc::BoolFunc() : Node(), _startByNot(false) {
+BoolFunc::BoolFunc() : Node(), _operand(), _operator(), _startByNot(false) {
 }
 
-BoolFunc::BoolFunc(const BoolFunc& orig) : Node(orig), _operand(orig._operand), _operator(orig._operator) {
+BoolFunc::BoolFunc(const BoolFunc& orig) : Node(orig), _operator(orig._operator) {
+    NodeCont::const_iterator it = orig._operand.begin();
+    NodeCont::const_iterator ite = orig._operand.end();
+
+    while (it != ite) {
+        NodePtr* ptrx = *it;
+        _operand.push_back(ptrx->clone());
+        ++it;
+    }
 }
 
 BoolFunc::~BoolFunc() {
@@ -20,6 +28,7 @@ BoolFunc::~BoolFunc() {
 
     while (it != ite) {
         delete *it;
+        ++it;
     }
 }
 
@@ -58,13 +67,13 @@ xbool BoolFunc::forward(ClosedList* list) {
     NodeCont::iterator itx = _operand.begin();
     NodeCont::iterator itxe = _operand.end();
 
-    xbool result = (*(*itx))->forward(list);
+    xbool result = (*itx)->getPtr()->forward(list);
     if (isStartByNot())
         result = Not::execute(result);
     itx++;
 
     while (it != ite && itx != itxe) {
-        result = (*it)->execute(result, (*(*itx))->forward(list));
+        result = (*it)->execute(result, (*itx)->getPtr()->forward(list));
         ++it;
         ++itx;
     }
@@ -85,11 +94,11 @@ xbool BoolFunc::backward(ClosedList* list) {
     NodeCont::iterator itx = _operand.begin();
     NodeCont::iterator itxe = _operand.end();
 
-    xbool result = (*(*itx))->backward(list);
+    xbool result = (*itx)->getPtr()->backward(list);
     itx++;
 
     while (it != ite && itx != itxe) {
-        result = (*it)->execute(result, (*(*itx))->backward(list));
+        result = (*it)->execute(result, (*itx)->getPtr()->backward(list));
         ++it;
         ++itx;
     }
@@ -129,12 +138,13 @@ void BoolFunc::addBoolFunc(BoolFunc& func) {
     OperatorCont::iterator itxe = _operator.end();
 
     if (_operand.size() == 1) {
-        (*(*it))->addBoolFunc(func);
+        (*it)->getPtr()->addBoolFunc(func);
         return;
     }
 
     while (it != ite && itx != itxe && (*itx)->getCode() == AND) {
-        (*(*it))->addBoolFunc(func);
+        NodePtr* ptrx = *it;
+        ptrx->getPtr()->addBoolFunc(func);
         ++it;
     }
 }
@@ -165,6 +175,6 @@ void BoolFunc::setStartByNot(bool value) {
     _startByNot = value;
 }
 
-void BoolFunc::addSubBoolFunc(BoolFunc& func) {
-    _operand.push_back(new SmartPtr<Node>(&func) );
+void BoolFunc::addDynBoolFunc(BoolFunc* func) {
+    _operand.push_back(new SmartPtr<Node>(func));
 }
