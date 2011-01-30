@@ -55,25 +55,21 @@ class SmartPtr : public IPtrContainer<T> {
 public:
 
     SmartPtr() : _ptr(0), _count(0) {
-        std::cout << "SmartPtr()" << std::endl;
         _count = new ReferenceCounter;
         _count->addRef();
     }
 
     SmartPtr(T* ptr) : _count(0) {
-        std::cout << "SmartPtr(T* ptr)" << std::endl;
         _ptr = new Container(ptr);
         _count = new ReferenceCounter;
         _count->addRef();
     }
 
     SmartPtr(const SmartPtr& orig) : _ptr(orig._ptr), _count(orig._count) {
-        std::cout << "SmartPtr(const SmartPtr& orig)" << std::endl;
         _count->addRef();
     }
 
     virtual ~SmartPtr() {
-        std::cout << "~SmartPtr()" << std::endl;
         _count->delRef();
         if (_count->isNull()) {
             if (_ptr) {
@@ -127,7 +123,6 @@ public:
 private:
     ReferenceCounter* _count;
     Container* _ptr;
-
 };
 
 #endif	/* SMARTPTR_HPP */
