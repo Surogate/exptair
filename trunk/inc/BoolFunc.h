@@ -18,7 +18,8 @@
 // fonction booleenne
 class BoolFunc : public Node {
 public:
-    typedef std::list< IPtrContainer<Node>* > NodeCont;
+    typedef IPtrContainer<Node> NodePtr;
+    typedef std::list< NodePtr* > NodeCont;
     typedef std::vector<Oper*> OperatorCont;
 
     BoolFunc();

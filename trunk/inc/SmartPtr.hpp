@@ -65,7 +65,7 @@ public:
         _count->addRef();
     }
 
-    SmartPtr(const SmartPtr& orig) : _ptr(orig._ptr), _count(orig._count) {
+    SmartPtr(const SmartPtr& orig) : _count(orig._count), _ptr(orig._ptr) {
         _count->addRef();
     }
 
@@ -120,6 +120,11 @@ public:
         }
         return *this;
     }
+
+    IPtrContainer<T>* clone() const{
+        return new SmartPtr(*this);
+    }
+
 private:
     ReferenceCounter* _count;
     Container* _ptr;
