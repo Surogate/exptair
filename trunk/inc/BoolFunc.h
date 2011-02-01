@@ -19,7 +19,7 @@
 
 class BoolFunc : public Node {
 public:
-    typedef IPtrContainer<Node> NodePtr; //abstrait les node alloué sur la stack et la heap
+    typedef IPtrContainer<Node> NodePtr; //abstrait les node alloué sur la stack et la heap, seul les node sur la heap seront delete
     typedef std::list< NodePtr* > NodeCont; //list des node
     typedef std::vector<Oper*> OperatorCont;
 
@@ -39,12 +39,14 @@ public:
     bool containAPartOf(const BoolFunc& func) const;
     bool isStartByNot() const;
     void setStartByNot(bool value);
-    void addDynBoolFunc(BoolFunc& func);
+    void addDynBoolFunc(SmartPtr<Node>& func);
+    void divideInAndBoolFunc(std::vector< SmartPtr<Node> >& in);
 
 private:
-    NodeCont _operand;
-    OperatorCont _operator;
-    bool _startByNot;
+    NodeCont _operand; // list des operand (A, B, C, etc)
+    OperatorCont _operator; // list des operator (AND, OR, XOR, etc..)
+    bool _startByNot; // true si elle commence par NOT
+    bool _andFlags; // true si tout les element sont des AND
 };
 
 #endif	/* BOOLFUNC_H */
