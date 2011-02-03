@@ -92,5 +92,5 @@ std::string Ai::getXboolValue(xbool val) const {
     if (it != _xboolValue.end()) {
         return it->second;
     }
-    return std::string("OMGWTFBBQ something is strange with xbool and XBoolList");
+    return std::string("OMGWTFBBQ something happen with xbool and XBoolList");
 }
