@@ -1,6 +1,8 @@
-!A*B=C*D+E
-A+B+C=E*F+G
+!A*B=C*D
+A+B+C=E*F
+D*C=J
 A*C=D
 A*D=C
 =A
 =B
+

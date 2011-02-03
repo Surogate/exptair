@@ -19,7 +19,7 @@ InputFileParser::InputFileParser() {
 
 bool InputFileParser::parseFile(const std::string& filepath, Ai& to) {
     if (loadPath(filepath)) {
-        while (parseLine(to) && consumeNewLine());
+        while ((parseLine(to) && consumeNewLine()) || consumeNewLine());
         if (eof())
             return true;
         else
@@ -65,6 +65,14 @@ SmartPtr<Node> InputFileParser::parseNode(Ai& to) {
         }
         return node;
     }
+    if (char_('(')) {
+        BoolFunc* func = new BoolFunc;
+        if (parseBoolFunc(to, *func) && char_(')')) {
+            SmartPtr<Node> node = func;
+            return node;
+        }
+        delete func;
+    }
     return SmartPtr<Node> ();
 }
 
@@ -93,6 +101,13 @@ bool InputFileParser::parseBaseAttr(Ai& to) {
         BoolFunc right;
         if (parseBoolFunc(to, right)) {
             right = xfalse;
+            return true;
+        }
+    }
+    if (readText("?=")) {
+        BoolFunc right;
+        if (parseBoolFunc(to, right)) {
+            right = xundefined;
             return true;
         }
     }
@@ -125,6 +140,18 @@ bool InputFileParser::parseInterogation(Ai& to) {
             std::cout << left.dump() << " is " << to.getXboolValue(value) << std::endl;
             return true;
         }
+    }
+    return false;
+}
+
+bool InputFileParser::parseContinue() {
+    return !readText("exit");
+}
+
+bool InputFileParser::parseForward(Ai& to) {
+    if(readText("forward")) {
+        to.forward();
+        return true;
     }
     return false;
 }
