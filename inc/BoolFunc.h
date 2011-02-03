@@ -38,6 +38,7 @@ public:
     bool containAPartOf(const BoolFunc& func) const;
     bool isStartByNot() const;
     void setStartByNot(bool value);
+    void invertStartByNot();
     void addDynBoolFunc(SmartPtr<Node> func);
     void divideInAndBoolFunc(std::vector< SmartPtr<Node> >& in);
     std::string dump() const;

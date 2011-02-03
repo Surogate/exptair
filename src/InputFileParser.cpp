@@ -29,32 +29,8 @@ bool InputFileParser::parseFile(const std::string& filepath, Ai& to) {
     return false;
 }
 
-bool InputFileParser::parseLine(const std::string& line, Ai& to) {
-    setText(line);
-    return parseLine(to);
-}
-
 bool InputFileParser::parseLine(Ai& to) {
-    BoolFunc left;
-
-    if (parseBoolFunc(to, left)) {
-        if (char_('=')) {
-            BoolFunc right;
-            if (parseBoolFunc(to, right)) {
-                right.addBoolFunc(left);
-                return true;
-            }
-        }
-    } else {
-        if (char_('=')) {
-            BoolFunc right;
-            if (parseBoolFunc(to, right)) {
-                right = xtrue;
-                return true;
-            }
-        }
-    }
-    return false;
+    return (parseComplexAttr(to) || parseBaseAttr(to));
 }
 
 bool InputFileParser::parseBoolFunc(Ai& to, BoolFunc& in) {
@@ -65,12 +41,12 @@ bool InputFileParser::parseBoolFunc(Ai& to, BoolFunc& in) {
     if (tmp.isInit()) {
         in.addOperand(tmp);
         do {
-        op = parseOper();
-        tmp = parseNode(to);
-        if (op && tmp.isInit()) {
-            in.addOperator(*op);
-            in.addOperand(tmp);
-        }
+            op = parseOper();
+            tmp = parseNode(to);
+            if (op && tmp.isInit()) {
+                in.addOperator(*op);
+                in.addOperand(tmp);
+            }
         } while (op && tmp.isInit());
         if (!op && !tmp.isInit())
             return true;
@@ -89,7 +65,7 @@ SmartPtr<Node> InputFileParser::parseNode(Ai& to) {
         }
         return node;
     }
-    return SmartPtr<Node>();
+    return SmartPtr<Node> ();
 }
 
 Oper* InputFileParser::parseOper() {
@@ -103,4 +79,52 @@ Oper* InputFileParser::parseOper() {
         ++it;
     }
     return 0;
+}
+
+bool InputFileParser::parseBaseAttr(Ai& to) {
+    if (char_('=')) {
+        BoolFunc right;
+        if (parseBoolFunc(to, right)) {
+            right = xtrue;
+            return true;
+        }
+    }
+    if (readText("!=")) {
+        BoolFunc right;
+        if (parseBoolFunc(to, right)) {
+            right = xfalse;
+            return true;
+        }
+    }
+    return false;
+}
+
+bool InputFileParser::parseComplexAttr(Ai& to) {
+    BoolFunc left;
+
+    unsigned int iterator = getIterator();
+    if (parseBoolFunc(to, left)) {
+        if (char_('=')) {
+            BoolFunc right;
+            if (parseBoolFunc(to, right)) {
+                right.addBoolFunc(left);
+                return true;
+            }
+        }
+    }
+    setIterator(iterator);
+    return false;
+}
+
+bool InputFileParser::parseInterogation(Ai& to) {
+    BoolFunc left;
+
+    if (parseBoolFunc(to, left)) {
+        if (char_('?')) {
+            xbool value = left.forward();
+            std::cout << left.dump() << " is " << to.getXboolValue(value) << std::endl;
+            return true;
+        }
+    }
+    return false;
 }
