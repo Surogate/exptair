@@ -8,6 +8,8 @@
 #ifndef OPER_H
 #define	OPER_H
 
+#include <string>
+
 #include "Singleton.hpp"
 #include "xbool.hpp"
 
@@ -25,6 +27,7 @@ public:
     virtual xbool execute(xbool a, xbool b) const = 0;
     virtual int complexity() const = 0;
     virtual operCode getCode() const = 0;
+    virtual std::string getValue() const = 0;
 };
 
 class And : public Oper, public Singleton<And> {
@@ -32,6 +35,7 @@ class And : public Oper, public Singleton<And> {
     xbool execute(xbool a, xbool b) const;
     int complexity() const;
     operCode getCode() const;
+    std::string getValue() const;
 };
 
 class Or : public Oper, public Singleton<Or> {
@@ -39,6 +43,7 @@ class Or : public Oper, public Singleton<Or> {
     xbool execute(xbool a, xbool b) const;
     int complexity() const;
     operCode getCode() const;
+    std::string getValue() const;
 };
 
 class AndNot : public Oper, public Singleton<AndNot> {
@@ -46,6 +51,7 @@ class AndNot : public Oper, public Singleton<AndNot> {
     xbool execute(xbool a, xbool b) const;
     int complexity() const;
     operCode getCode() const;
+    std::string getValue() const;
 };
 
 class OrNot : public Oper, public Singleton<OrNot> {
@@ -53,6 +59,7 @@ class OrNot : public Oper, public Singleton<OrNot> {
     xbool execute(xbool a, xbool b) const;
     int complexity() const;
     operCode getCode() const;
+    std::string getValue() const;
 };
 
 #endif	/* OPER_H */

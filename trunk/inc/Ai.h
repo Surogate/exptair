@@ -11,14 +11,15 @@
 #include <string>
 #include <map>
 #include "Node.h"
+#include "SmartPtr.hpp"
 
 class Ai {
 public:
-    typedef std::map<char, Node*> NodeCont;
+    typedef std::map<char, SmartPtr<Node> > NodeCont;
 
     bool loadPath(const std::string& filepath);
-    void addNode(Node* no);
-    Node* getNode(char letter);
+    void addNode(SmartPtr<Node> no);
+    SmartPtr<Node> getNode(char letter);
     void forward();
     void backward();
 private:

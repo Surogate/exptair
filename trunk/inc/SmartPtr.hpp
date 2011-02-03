@@ -54,7 +54,7 @@ template <class T, typename Container = SafeContainer<T> >
 class SmartPtr : public IPtrContainer<T> {
 public:
 
-    SmartPtr() : _ptr(0), _count(0) {
+    SmartPtr() : _count(0), _ptr(0) {
         _count = new ReferenceCounter;
         _count->addRef();
     }
@@ -81,33 +81,45 @@ public:
     }
 
     T * operator*() {
-        return _ptr->getPtr();
+        if (_ptr)
+            return _ptr->getPtr();
+        return 0;
     }
 
     const T * operator*() const {
-        return _ptr->getPtr();
+        if (_ptr)
+            return _ptr->getPtr();
+        return 0;
     }
 
     T * operator-> () {
-        return _ptr->getPtr();
+        if (_ptr)
+            return _ptr->getPtr();
+        return 0;
     }
 
     const T * operator-> () const {
-        return _ptr->getPtr();
+        if (_ptr)
+            return _ptr->getPtr();
+        return 0;
     }
 
     T* getPtr() {
-        return _ptr->getPtr();
+        if (_ptr)
+            return _ptr->getPtr();
+        return 0;
     }
-    
-    const T* getPtr() const{
-        return _ptr->getPtr();
+
+    const T* getPtr() const {
+        if (_ptr)
+            return _ptr->getPtr();
+        return 0;
     }
 
     SmartPtr & operator=(const SmartPtr& orig) {
         if (this != &orig) {
             _count->delRef();
-            if (!_count->isNull()) {
+            if (_count->isNull()) {
                 if (_ptr) {
                     delete _ptr;
                     _ptr = 0;
@@ -121,8 +133,12 @@ public:
         return *this;
     }
 
-    IPtrContainer<T>* clone() const{
+    IPtrContainer<T>* clone() const {
         return new SmartPtr(*this);
+    }
+
+    unsigned long getRef() const {
+        return _count->getRef();
     }
 
 private:

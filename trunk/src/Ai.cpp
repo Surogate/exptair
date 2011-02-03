@@ -17,17 +17,17 @@ bool Ai::loadPath(const std::string& filePath) {
     return parser.parseFile(filePath, *this);
 }
 
-void Ai::addNode(Node* no) {
+void Ai::addNode(SmartPtr<Node> no) {
     _nodeList[no->getLetter()] = no;
 }
 
-Node* Ai::getNode(char letter) {
+SmartPtr<Node> Ai::getNode(char letter) {
     NodeCont::iterator it = _nodeList.find(letter);
 
     if (it != _nodeList.end()) {
         return it->second;
     }
-    return 0;
+    return SmartPtr<Node>();
 }
 
 void Ai::forward()  {
@@ -40,13 +40,13 @@ void Ai::forward()  {
 
     while (it != ite) {
         xbool result = (it->second)->forward();
-        char letter = it->second->getLetter();
+        char value =  it->second->getLetter();
         if (result == xtrue) {
-            nodeTrue.push_back(letter);
+            nodeTrue.push_back(value);
         } else if (result == xfalse) {
-            nodeFalse.push_back(letter);
+            nodeFalse.push_back(value);
         } else {
-            nodeUnde.push_back(letter);
+            nodeUnde.push_back(value);
         }
         ++it;
     }

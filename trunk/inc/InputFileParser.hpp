@@ -22,7 +22,7 @@ public:
 private:
     bool parseLine(Ai& to);
     bool parseBoolFunc(Ai& to, BoolFunc& in);
-    Node* parseNode(Ai& to);
+    SmartPtr<Node> parseNode(Ai& to);
     Oper* parseOper();
 
     OperatorMap _operMap;
