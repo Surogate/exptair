@@ -50,12 +50,14 @@ char Node::getLetter() const {
 // ajoute une regle dans la liste, suivant sa complexite
 
 void Node::addBoolFunc(const BoolFunc& func) {
+    _evaluate = false;
     FuncList::iterator it = _boolFuncList.begin();
     FuncList::iterator ite = _boolFuncList.end();
 
     while (it != ite && it->complexity() < func.complexity()) {
         ++it;
     }
+
     if (it != ite) {
         _boolFuncList.insert(it, func);
     } else {
@@ -82,24 +84,23 @@ xbool Node::forward(ClosedList* list) {
     if (list->find(_let) == list->end()) {
         FuncList::iterator it = _boolFuncList.begin();
         FuncList::iterator ite = _boolFuncList.end();
-        xbool answer = xundefined;
+        _value = xundefined;
 
         list->operator [](_let) = true;
         while (it != ite) {
             xbool result = it->forward(list);
-
             if (result == xfalse)
-                answer = xfalse;
+                _value = xfalse;
             if (result == xtrue) {
                 this->operator =(xtrue);
                 return xtrue;
             }
             ++it;
         }
-        return answer;
-    } else {
-        return xreevaluate;
+        if (_value != xundefined)
+            _evaluate = true;
     }
+    return _value;
 }
 
 xbool Node::backward(ClosedList* list) {
@@ -114,24 +115,24 @@ xbool Node::backward(ClosedList* list) {
     if (list->find(_let) == list->end()) {
         FuncList::iterator it = _boolFuncList.begin();
         FuncList::iterator ite = _boolFuncList.end();
-        xbool answer = xundefined;
+        _value = xundefined;
 
         list->operator [](_let) = true;
         while (it != ite) {
             xbool result = it->backward(list);
 
             if (result == xfalse)
-                answer = xfalse;
+                this->operator =(xfalse);
             if (result == xtrue) {
                 this->operator =(xtrue);
                 return xtrue;
             }
             ++it;
         }
-        if (answer == xundefined) {
+        if (_value == xundefined) {
             return askUserToDefine();
         }
-        return answer;
+        return _value;
     }
     return askUserToDefine();
 }
