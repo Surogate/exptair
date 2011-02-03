@@ -244,7 +244,10 @@ std::string BoolFunc::dump() const {
     std::stringstream out;
 
     if (it != ite) {
-        out << "(" << (*it)->dump();
+        out << "(";
+        if (_startByNot)
+            out << "NOT ";
+        out << (*it)->dump();
         ++it;
     }
 

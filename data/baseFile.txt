@@ -3,6 +3,4 @@ A+B+C=E*F
 D*C=J
 A*C=D
 A*D=C
-=A
-=B
 
