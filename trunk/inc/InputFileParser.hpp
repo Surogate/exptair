@@ -11,8 +11,10 @@
 #include "AParser.hpp"
 #include "Ai.h"
 #include "BoolFunc.h"
+#include "Singleton.hpp"
 
-class InputFileParser : public AParser {
+class InputFileParser : public AParser, public Singleton<InputFileParser> {
+    SINGLETON_CLASS(InputFileParser);
 public:
     typedef std::map<std::string, Oper*> OperatorMap;
 
@@ -24,6 +26,7 @@ public:
     bool parseInterogation(Ai& to);
     bool parseContinue();
     bool parseForward(Ai& to);
+    bool parseLoad(Ai& to);
 
 private:
 

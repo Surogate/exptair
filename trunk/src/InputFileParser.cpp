@@ -155,3 +155,17 @@ bool InputFileParser::parseForward(Ai& to) {
     }
     return false;
 }
+
+bool InputFileParser::parseLoad(Ai& to) {
+    std::string path;
+    if (readText("load") && consumeSpace() && readQuotedTextIn(path)) {
+        if (parseFile(path, to)) {
+            std::cout << "load \"" << path << "\" ok !!§§" << std::endl;
+            to.forward();
+            return true;
+        } else {
+            std::cout << "load fail" << std::endl;
+        }
+    }
+    return false;
+}
