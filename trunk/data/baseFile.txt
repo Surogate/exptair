@@ -1,5 +1,6 @@
-A*B=C*D
+!A*B=C*D+E
 A*C=D
 A*D=C
+!A=E
 =A
 =B

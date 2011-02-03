@@ -133,9 +133,9 @@ void BoolFunc::addBoolFunc(BoolFunc& func) {
         OperatorCont::iterator itxe = _operator.end();
 
         if (it != ite && _startByNot) {
-            func._startByNot = !func._startByNot; // on inverse
+            func.invertStartByNot();
             (*it)->addBoolFunc(func);
-            func._startByNot = !func._startByNot; // on revient a la normale
+            func.invertStartByNot();// on revient a la normale
             ++it;
         }
 
@@ -143,9 +143,9 @@ void BoolFunc::addBoolFunc(BoolFunc& func) {
             if ((*itx)->getCode() == AND) {
                 (*it)->addBoolFunc(func);
             } else {
-                func._startByNot = !func._startByNot; // on inverse
+                func.invertStartByNot(); // on inverse
                 (*it)->addBoolFunc(func);
-                func._startByNot = !func._startByNot; // on revient a la normale
+                func.invertStartByNot(); // on revient a la normale
             }
             ++it;
             ++itx;
@@ -190,6 +190,10 @@ bool BoolFunc::isStartByNot() const {
 
 void BoolFunc::setStartByNot(bool value) {
     _startByNot = value;
+}
+
+void BoolFunc::invertStartByNot() {
+    _startByNot = !_startByNot;
 }
 
 void BoolFunc::addDynBoolFunc(SmartPtr<Node> func) {

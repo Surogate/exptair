@@ -18,13 +18,16 @@ public:
 
     InputFileParser();
     bool parseFile(const std::string& filepath, Ai& to);
-    bool parseLine(const std::string& line, Ai& to);
-private:
     bool parseLine(Ai& to);
+    bool parseBaseAttr(Ai& to);
+    bool parseComplexAttr(Ai& to);
+    bool parseInterogation(Ai& to);
+
+private:
+
     bool parseBoolFunc(Ai& to, BoolFunc& in);
     SmartPtr<Node> parseNode(Ai& to);
     Oper* parseOper();
-
     OperatorMap _operMap;
 };
 

@@ -15,15 +15,19 @@
 
 class Ai {
 public:
+    Ai();
     typedef std::map<char, SmartPtr<Node> > NodeCont;
+    typedef std::map<xbool, std::string> XBoolList;
 
     bool loadPath(const std::string& filepath);
     void addNode(SmartPtr<Node> no);
     SmartPtr<Node> getNode(char letter);
     void forward();
     void backward();
+    std::string getXboolValue(xbool val) const;
 private:
-     NodeCont _nodeList;
+    NodeCont _nodeList;
+    XBoolList _xboolValue;
 };
 
 #endif	/* AI_H */

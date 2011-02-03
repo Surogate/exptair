@@ -12,9 +12,17 @@
 
 class AParser {
 public:
+    AParser();
     bool loadPath(const std::string& path);
     void setText(const std::string& str);
     inline bool eof();
+    const std::string& getText() const;
+    unsigned int getLineConsumed() const;
+    unsigned int getIterator() const;
+    char getTextIterator() const;
+    unsigned int getLetterPos() const;
+
+protected:
     inline bool peek(const char c);
     inline bool peek(const char a, const char b);
     inline bool char_(const char c);
@@ -31,10 +39,7 @@ public:
     bool consumeSpace();
     bool consumeNewLine();
     bool consumeBlanks();
-    unsigned int getLineConsumed();
-    unsigned int getIterator();
-    char getTextIterator();
-    unsigned int getLetterPos();
+    void setIterator(unsigned int val);
 
 private:
     std::string _file;
@@ -85,6 +90,10 @@ inline bool AParser::consumeSpace() {
 inline bool AParser::consumeBlanks() {
     while (consumeSpace() || consumeNewLine());
     return !eof();
+}
+
+inline void AParser::setIterator(unsigned int val) {
+    _iterator = val;
 }
 
 #endif	/* APARSER_HPP */
