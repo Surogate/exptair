@@ -118,6 +118,10 @@ xbool Node::backward(ClosedList* list) {
         _value = xundefined;
 
         list->operator [](_let) = true;
+        if (it == ite) {
+            std::cout << _let << " is not defined by a function" << std::endl;
+            return askUserToDefine();
+        }
         while (it != ite) {
             xbool result = it->backward(list);
 

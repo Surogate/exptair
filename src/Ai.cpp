@@ -77,17 +77,20 @@ void Ai::forward() {
 void Ai::backward() {
     bool continue_ = true;
     std::string str;
-    std::cout << "command : ={func} ; !={func} ; ?={func} ; {func}={func} ; {func}? ; forward ; exit" << std::endl;
+    std::cout << "command : ={func} ; !={func} ; ?={func} ; {func}={func} ; {func}? ; forward ; exit ; load \"{path}\"" << std::endl;
     while (continue_) {
         str.clear();
-        std::cin >> str;
-        Singleton<InputFileParser>::Instance().setText(str);
-        if (!(Singleton<InputFileParser>::Instance().parseLine(*this) 
-                || Singleton<InputFileParser>::Instance().parseInterogation(*this)
-                || Singleton<InputFileParser>::Instance().parseForward(*this))) {
-            continue_ = Singleton<InputFileParser>::Instance().parseContinue();
-            if (continue_)
-                std::cout << "invalid command" << std::endl;
+        std::getline(std::cin, str);
+        if (str.size()) {
+            Singleton<InputFileParser>::Instance().setText(str);
+            if (!(Singleton<InputFileParser>::Instance().parseLine(*this)
+                    || Singleton<InputFileParser>::Instance().parseInterogation(*this)
+                    || Singleton<InputFileParser>::Instance().parseForward(*this)
+                    || Singleton<InputFileParser>::Instance().parseLoad(*this))) {
+                continue_ = Singleton<InputFileParser>::Instance().parseContinue();
+                if (continue_)
+                    std::cout << "invalid command" << std::endl;
+            }
         }
     }
 }
