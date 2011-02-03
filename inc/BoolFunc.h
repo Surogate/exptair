@@ -19,8 +19,7 @@
 
 class BoolFunc : public Node {
 public:
-    typedef IPtrContainer<Node> NodePtr; //abstrait les node alloué sur la stack et la heap, seul les node sur la heap seront delete
-    typedef std::list< NodePtr* > NodeCont; //list des node
+    typedef std::list< SmartPtr<Node> > NodeCont; //list des node
     typedef std::vector<Oper*> OperatorCont;
 
     BoolFunc();
@@ -35,12 +34,13 @@ public:
     int complexity() const;
     void addBoolFunc(BoolFunc& func);
     void addOperator(Oper& op);
-    void addOperand(Node& no);
+    void addOperand(SmartPtr<Node> no);
     bool containAPartOf(const BoolFunc& func) const;
     bool isStartByNot() const;
     void setStartByNot(bool value);
-    void addDynBoolFunc(SmartPtr<Node>& func);
+    void addDynBoolFunc(SmartPtr<Node> func);
     void divideInAndBoolFunc(std::vector< SmartPtr<Node> >& in);
+    std::string dump() const;
 
 private:
     NodeCont _operand; // list des operand (A, B, C, etc)

@@ -36,6 +36,12 @@ Node& Node::operator=(const Node& orig) {
     return *this;
 }
 
+std::string Node::dump() const {
+    std::string val;
+    val += _let;
+    return val;
+}
+
 char Node::getLetter() const {
     return _let;
 }

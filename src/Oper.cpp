@@ -39,6 +39,10 @@ operCode And::getCode() const {
     return AND;
 }
 
+std::string And::getValue() const {
+    return "AND";
+}
+
 xbool Or::execute(xbool a, xbool b) const {
     if (a == xtrue || b == xtrue)
         return xtrue;
@@ -55,6 +59,10 @@ int Or::complexity() const {
 
 operCode Or::getCode() const {
     return OR;
+}
+
+std::string Or::getValue() const {
+    return "OR";
 }
 
 xbool AndNot::execute(xbool a, xbool b) const {
@@ -76,6 +84,10 @@ operCode AndNot::getCode() const {
     return ANDNOT;
 }
 
+std::string AndNot::getValue() const {
+    return "AND NOT";
+}
+
 xbool OrNot::execute(xbool a, xbool b) const {
     b = Not::execute(b);
     if (a == xtrue || b == xtrue)
@@ -93,5 +105,9 @@ int OrNot::complexity() const {
 
 operCode OrNot::getCode() const {
     return ORNOT;
+}
+
+std::string OrNot::getValue() const {
+    return "OR NOT";
 }
 

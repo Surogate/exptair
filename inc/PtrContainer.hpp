@@ -21,6 +21,9 @@ public:
     virtual T* getPtr() = 0;
     virtual const T* getPtr() const = 0;
     virtual IPtrContainer* clone() const = 0;
+    virtual bool isInit() const {
+        return (getPtr() != 0);
+    }
 };
 
 //this container clean his pointer when remplacing it or is delete

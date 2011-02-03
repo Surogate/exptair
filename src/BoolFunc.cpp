@@ -5,31 +5,18 @@
  * Created on January 13, 2011, 2:55 PM
  */
 
+#include <sstream>
+
 #include "BoolFunc.h"
 #include "xbool.hpp"
 
-BoolFunc::BoolFunc() : Node(), _operand(), _operator(), _startByNot(false), _andFlags(true) {
+BoolFunc::BoolFunc() : Node(), _startByNot(false), _andFlags(true) {
 }
 
-BoolFunc::BoolFunc(const BoolFunc& orig) : Node(orig), _operator(orig._operator) {
-    NodeCont::const_iterator it = orig._operand.begin();
-    NodeCont::const_iterator ite = orig._operand.end();
-
-    while (it != ite) {
-        NodePtr* ptrx = *it;
-        _operand.push_back(ptrx->clone());
-        ++it;
-    }
+BoolFunc::BoolFunc(const BoolFunc& orig) : Node(orig), _operand(orig._operand), _operator(orig._operator), _startByNot(orig._startByNot), _andFlags(orig._andFlags) {
 }
 
 BoolFunc::~BoolFunc() {
-    NodeCont::iterator it = _operand.begin();
-    NodeCont::iterator ite = _operand.end();
-
-    while (it != ite) {
-        delete *it;
-        ++it;
-    }
 }
 
 BoolFunc& BoolFunc::operator =(const BoolFunc& orig) {
@@ -44,7 +31,7 @@ void BoolFunc::operator =(xbool value) {
     NodeCont::iterator ite = _operand.end();
 
     while (it != ite) {
-        (*(*it))->operator =(value);
+        (*it)->operator =(value);
         ++it;
     }
 }
@@ -59,7 +46,7 @@ xbool BoolFunc::forward(ClosedList* list) {
         return this->forward(&_list);
     }
     if (_operand.size() == 1)
-        return (*_operand.front())->forward(list);
+        return (_operand.front())->forward(list);
 
     OperatorCont::iterator it = _operator.begin();
     OperatorCont::iterator ite = _operator.end();
@@ -67,13 +54,13 @@ xbool BoolFunc::forward(ClosedList* list) {
     NodeCont::iterator itx = _operand.begin();
     NodeCont::iterator itxe = _operand.end();
 
-    xbool result = (*itx)->getPtr()->forward(list);
+    xbool result = (*itx)->forward(list);
     if (isStartByNot())
         result = Not::execute(result);
     itx++;
 
     while (it != ite && itx != itxe) {
-        result = (*it)->execute(result, (*itx)->getPtr()->forward(list));
+        result = (*it)->execute(result, (*itx)->forward(list));
         ++it;
         ++itx;
     }
@@ -94,11 +81,11 @@ xbool BoolFunc::backward(ClosedList* list) {
     NodeCont::iterator itx = _operand.begin();
     NodeCont::iterator itxe = _operand.end();
 
-    xbool result = (*itx)->getPtr()->backward(list);
+    xbool result = (*itx)->backward(list);
     itx++;
 
     while (it != ite && itx != itxe) {
-        result = (*it)->execute(result, (*itx)->getPtr()->backward(list));
+        result = (*it)->execute(result, (*itx)->backward(list));
         ++it;
         ++itx;
     }
@@ -123,18 +110,18 @@ int BoolFunc::complexity() const {
 }
 
 void BoolFunc::addOperator(Oper& op) {
-    if (op.getCode() != AND || op.getCode() != ANDNOT)
+    if (op.getCode() != AND && op.getCode() != ANDNOT)
         _andFlags = false;
     _operator.push_back(&op);
 }
 
-void BoolFunc::addOperand(Node& no) {
-    _operand.push_back(new SmartPtr<Node, UnsafeContainer<Node> >(&no));
+void BoolFunc::addOperand(SmartPtr<Node> no) {
+    _operand.push_back(no);
 }
 
 void BoolFunc::addBoolFunc(BoolFunc& func) {
     if (_operand.size() == 1) {
-        (*_operand.begin())->getPtr()->addBoolFunc(func);
+        (*_operand.begin())->addBoolFunc(func);
         return;
     }
 
@@ -147,22 +134,23 @@ void BoolFunc::addBoolFunc(BoolFunc& func) {
 
         if (it != ite && _startByNot) {
             func._startByNot = !func._startByNot; // on inverse
-            (*it)->getPtr()->addBoolFunc(func);
+            (*it)->addBoolFunc(func);
             func._startByNot = !func._startByNot; // on revient a la normale
             ++it;
         }
 
         while (it != ite && itx != itxe) {
             if ((*itx)->getCode() == AND) {
-                (*it)->getPtr()->addBoolFunc(func);
+                (*it)->addBoolFunc(func);
             } else {
                 func._startByNot = !func._startByNot; // on inverse
-                (*it)->getPtr()->addBoolFunc(func);
+                (*it)->addBoolFunc(func);
                 func._startByNot = !func._startByNot; // on revient a la normale
             }
             ++it;
             ++itx;
         }
+        return;
     }
 
     std::vector< SmartPtr<Node> > functions;
@@ -186,7 +174,7 @@ bool BoolFunc::containAPartOf(const BoolFunc& func) const {
         NodeCont::const_iterator it = _operand.begin();
         NodeCont::const_iterator ite = _operand.end();
 
-        while (it != ite && ((*itx)->getPtr())->getLetter() != (*(*it))->getLetter()) {
+        while (it != ite && ((*itx))->dump() != (*(*it))->dump()) {
             ++it;
         }
         if (it == ite)
@@ -204,8 +192,8 @@ void BoolFunc::setStartByNot(bool value) {
     _startByNot = value;
 }
 
-void BoolFunc::addDynBoolFunc(SmartPtr<Node>& func) {
-    _operand.push_back(new SmartPtr<Node > (func));
+void BoolFunc::addDynBoolFunc(SmartPtr<Node> func) {
+    _operand.push_back(func);
 }
 
 void BoolFunc::divideInAndBoolFunc(std::vector< SmartPtr<Node> >& in) {
@@ -217,18 +205,42 @@ void BoolFunc::divideInAndBoolFunc(std::vector< SmartPtr<Node> >& in) {
 
     BoolFunc* tmp = 0;
     while (it != ite && itx != itxe) {
-        tmp = new BoolFunc;
-        tmp->addOperand(*((*it)->getPtr()));
+        tmp = new BoolFunc();
+        tmp->addOperand(*it);
         ++it;
         while (it != ite && itx != itxe && ((*itx)->getCode() == AND || (*itx)->getCode() == ANDNOT)) {
-            tmp->addOperand(*((*it)->getPtr()));
+            tmp->addOperand(*it);
             tmp->addOperator(*(*itx));
             ++it;
             ++itx;
         }
-        if ((*itx)->getCode() == ORNOT)
-            tmp._startByNot = true;
+        if (itx != itxe && (*itx)->getCode() == ORNOT)
+            tmp->_startByNot = true;
         in.push_back(SmartPtr<Node > (tmp));
         ++itx;
     }
+}
+
+std::string BoolFunc::dump() const {
+    NodeCont::const_iterator it = _operand.begin();
+    NodeCont::const_iterator ite = _operand.end();
+
+    OperatorCont::const_iterator itx = _operator.begin();
+    OperatorCont::const_iterator itxe = _operator.end();
+
+    std::stringstream out;
+
+    if (it != ite) {
+        out << "(" << (*it)->dump();
+        ++it;
+    }
+
+    while (it != ite && itx != itxe) {
+        out << " " << (*itx)->getValue() << " " << (*it)->dump();
+        ++it;
+        ++itx;
+    }
+
+    out << ")" << std::endl;
+    return out.str();
 }

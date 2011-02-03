@@ -33,6 +33,7 @@ public:
     virtual xbool backward(ClosedList* list = 0);
 
     virtual void operator=(xbool);
+    virtual std::string dump() const;
     char getLetter() const;
 
     virtual int complexity() const;

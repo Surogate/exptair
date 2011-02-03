@@ -60,34 +60,36 @@ bool InputFileParser::parseLine(Ai& to) {
 bool InputFileParser::parseBoolFunc(Ai& to, BoolFunc& in) {
     if (char_('!'))
         in.setStartByNot(true);
-    Node* tmp = parseNode(to);
-    if (tmp) {
-        in.addOperand(*tmp);
-        Oper* op = parseOper();
+    SmartPtr<Node> tmp = parseNode(to);
+    Oper* op = 0;
+    if (tmp.isInit()) {
+        in.addOperand(tmp);
+        do {
+        op = parseOper();
         tmp = parseNode(to);
-        while (op && tmp) {
+        if (op && tmp.isInit()) {
             in.addOperator(*op);
-            in.addOperand(*tmp);
-            op = parseOper();
-            tmp = parseNode(to);
+            in.addOperand(tmp);
         }
-        if (!op && !tmp)
+        } while (op && tmp.isInit());
+        if (!op && !tmp.isInit())
             return true;
     }
     return false;
 }
 
-Node* InputFileParser::parseNode(Ai& to) {
-    char letter;
+SmartPtr<Node> InputFileParser::parseNode(Ai& to) {
+    char letter = 0;
     if (char_('A', 'Z', letter)) {
-        Node* node = to.getNode(letter);
-        if (!node) {
-            node = new Node(letter);
-            to.addNode(node);
+        SmartPtr<Node> node = to.getNode(letter);
+        if (!node.isInit()) {
+            SmartPtr<Node> Snode = new Node(letter);
+            to.addNode(Snode);
+            return Snode;
         }
         return node;
     }
-    return 0;
+    return SmartPtr<Node>();
 }
 
 Oper* InputFileParser::parseOper() {
