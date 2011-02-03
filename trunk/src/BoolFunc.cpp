@@ -27,12 +27,46 @@ BoolFunc& BoolFunc::operator =(const BoolFunc& orig) {
 }
 
 void BoolFunc::operator =(xbool value) {
-    NodeCont::iterator it = _operand.begin();
-    NodeCont::iterator ite = _operand.end();
+    if (_andFlags) {
+        NodeCont::iterator it = _operand.begin();
+        NodeCont::iterator ite = _operand.end();
+        OperatorCont::iterator itx = _operator.begin();
+        OperatorCont::iterator itxe = _operator.end();
 
-    while (it != ite) {
-        (*it)->operator =(value);
-        ++it;
+        if (it != ite) {
+            if (_startByNot)
+                (*it)->operator =(Not::execute(value));
+            else
+                (*it)->operator =(value);
+            ++it;
+        }
+
+        while (it != ite && itx != itxe) {
+            if ((*itx)->getCode() == ANDNOT)
+                (*it)->operator =(Not::execute(value));
+            else
+                (*it)->operator =(value);
+            ++it;
+            ++itx;
+        }
+    } else {
+        std::vector< SmartPtr<Node> > functions;
+        divideInAndBoolFunc(functions);
+        int good = -1;
+        for (unsigned int i = 0; i < functions.size(); i++) {
+            xbool tmp = functions[i]->forward();
+            if (tmp == xundefined) {
+                if (good == -1)
+                    good = i;
+                else {
+                    good = -2;
+                }
+            } else if (tmp == xtrue) {
+                good = -2;
+            }
+        }
+        if (good >= 0)
+            functions[good]->operator =(value);
     }
 }
 
@@ -216,9 +250,11 @@ void BoolFunc::divideInAndBoolFunc(std::vector< SmartPtr<Node> >& in) {
     OperatorCont::iterator itx = _operator.begin();
     OperatorCont::iterator itxe = _operator.end();
 
-    BoolFunc* tmp = 0;
+    BoolFunc* tmp = new BoolFunc;
+    tmp->_startByNot = _startByNot;
     while (it != ite) {
-        tmp = new BoolFunc();
+        if (!tmp)
+            tmp = new BoolFunc();
         tmp->addOperand(*it);
         ++it;
         while (it != ite && itx != itxe && ((*itx)->getCode() == AND || (*itx)->getCode() == ANDNOT)) {
@@ -227,10 +263,11 @@ void BoolFunc::divideInAndBoolFunc(std::vector< SmartPtr<Node> >& in) {
             ++it;
             ++itx;
         }
-        if (itx != itxe && (*itx)->getCode() == ORNOT)
+        if (itx != itxe && ((*itx)->getCode() == ORNOT || (*itx)->getCode() == XORNOT))
             tmp->_startByNot = true;
         in.push_back(SmartPtr<Node > (tmp));
         ++itx;
+        tmp = 0;
     }
 }
 

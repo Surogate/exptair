@@ -15,6 +15,8 @@ InputFileParser::InputFileParser() {
     _operMap["+"] = &Singleton<Or>::Instance();
     _operMap["*!"] = &Singleton<AndNot>::Instance();
     _operMap["+!"] = &Singleton<OrNot>::Instance();
+    _operMap["-"] =&Singleton<Xor>::Instance();
+    _operMap["-!"] =&Singleton<XorNot>::Instance();
 }
 
 bool InputFileParser::parseFile(const std::string& filepath, Ai& to) {
@@ -93,6 +95,7 @@ bool InputFileParser::parseBaseAttr(Ai& to) {
     if (char_('=')) {
         BoolFunc right;
         if (parseBoolFunc(to, right)) {
+            to.devaluateAll();
             right = xtrue;
             return true;
         }
@@ -100,6 +103,7 @@ bool InputFileParser::parseBaseAttr(Ai& to) {
     if (readText("!=")) {
         BoolFunc right;
         if (parseBoolFunc(to, right)) {
+            to.devaluateAll();
             right = xfalse;
             return true;
         }
@@ -107,6 +111,7 @@ bool InputFileParser::parseBaseAttr(Ai& to) {
     if (readText("?=")) {
         BoolFunc right;
         if (parseBoolFunc(to, right)) {
+            to.devaluateAll();
             right = xundefined;
             return true;
         }
@@ -136,6 +141,7 @@ bool InputFileParser::parseInterogation(Ai& to) {
 
     if (parseBoolFunc(to, left)) {
         if (char_('?')) {
+            to.devaluateAll();
             xbool value = left.backward();
             std::cout << left.dump() << " is " << to.getXboolValue(value) << std::endl;
             return true;

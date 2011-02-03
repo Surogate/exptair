@@ -102,3 +102,13 @@ std::string Ai::getXboolValue(xbool val) const {
     }
     return std::string("OMGWTFBBQ something happen with xbool and XBoolList");
 }
+
+void Ai::devaluateAll() {
+    NodeCont::iterator it = _nodeList.begin();
+    NodeCont::iterator ite = _nodeList.end();
+
+    while (it != ite) {
+        it->second->devaluate();
+        ++it;
+    }
+}
