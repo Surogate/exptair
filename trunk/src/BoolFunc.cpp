@@ -73,7 +73,7 @@ xbool BoolFunc::backward(ClosedList* list) {
         return this->backward(&_list);
     }
     if (_operand.size() == 1)
-        return (*_operand.front())->backward(list);
+        return (_operand.front())->backward(list);
 
     OperatorCont::iterator it = _operator.begin();
     OperatorCont::iterator ite = _operator.end();
@@ -82,6 +82,8 @@ xbool BoolFunc::backward(ClosedList* list) {
     NodeCont::iterator itxe = _operand.end();
 
     xbool result = (*itx)->backward(list);
+    if (isStartByNot())
+        result = Not::execute(result);
     itx++;
 
     while (it != ite && itx != itxe) {
@@ -245,6 +247,6 @@ std::string BoolFunc::dump() const {
         ++itx;
     }
 
-    out << ")" << std::endl;
+    out << ")";
     return out.str();
 }

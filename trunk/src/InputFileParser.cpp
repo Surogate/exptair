@@ -121,7 +121,7 @@ bool InputFileParser::parseInterogation(Ai& to) {
 
     if (parseBoolFunc(to, left)) {
         if (char_('?')) {
-            xbool value = left.forward();
+            xbool value = left.backward();
             std::cout << left.dump() << " is " << to.getXboolValue(value) << std::endl;
             return true;
         }

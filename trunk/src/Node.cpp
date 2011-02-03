@@ -98,7 +98,7 @@ xbool Node::backward(ClosedList* list) {
 
     if (!list) {
         ClosedList _list;
-        return this->forward(&_list);
+        return this->backward(&_list);
     }
 
     if (list->find(_let) == list->end()) {
@@ -154,7 +154,7 @@ void Node::addInClosedList(ClosedList& list, char letter) {
 
 xbool Node::askUserToDefine() {
     std::string userInput;
-    std::cout << "event " << _let << "is not know, could you evaluate ? (true, false)" << std::endl;
+    std::cout << "event " << _let << " is not know, could you evaluate ? (true, false)" << std::endl;
     while (!_evaluate) {
         std::cin >> userInput;
         if (userInput == "true") {
