@@ -22,6 +22,8 @@ public:
     bool parseBaseAttr(Ai& to);
     bool parseComplexAttr(Ai& to);
     bool parseInterogation(Ai& to);
+    bool parseContinue();
+    bool parseForward(Ai& to);
 
 private:
 

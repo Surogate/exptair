@@ -49,8 +49,18 @@ char Node::getLetter() const {
 
 // ajoute une regle dans la liste, suivant sa complexite
 
-void Node::addBoolFunc(BoolFunc& func) {
-    _boolFuncList.push_back(func);
+void Node::addBoolFunc(const BoolFunc& func) {
+    FuncList::iterator it = _boolFuncList.begin();
+    FuncList::iterator ite = _boolFuncList.end();
+
+    while (it != ite && it->complexity() < func.complexity()) {
+        ++it;
+    }
+    if (it != ite) {
+        _boolFuncList.insert(it, func);
+    } else {
+        _boolFuncList.push_back(func);
+    }
 }
 
 //on assigne une valeur par defaut a une node
@@ -108,7 +118,7 @@ xbool Node::backward(ClosedList* list) {
 
         list->operator [](_let) = true;
         while (it != ite) {
-            xbool result = it->forward(list);
+            xbool result = it->backward(list);
 
             if (result == xfalse)
                 answer = xfalse;
@@ -154,7 +164,7 @@ void Node::addInClosedList(ClosedList& list, char letter) {
 
 xbool Node::askUserToDefine() {
     std::string userInput;
-    std::cout << "event " << _let << " is not know, could you evaluate ? (true, false)" << std::endl;
+    std::cout << "event " << _let << " is not know, could you evaluate ? (true, false, '?')" << std::endl;
     while (!_evaluate) {
         std::cin >> userInput;
         if (userInput == "true") {
@@ -162,7 +172,8 @@ xbool Node::askUserToDefine() {
         } else if (userInput == "false") {
             this->operator =(xfalse);
         } else {
-            std::cout << "please answer with True or False" << std::endl;
+            std::cout << _let << " is now undefined" << std::endl;
+            return xundefined;
         }
     }
     return _value;

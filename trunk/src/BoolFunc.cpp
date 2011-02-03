@@ -134,10 +134,12 @@ void BoolFunc::addBoolFunc(BoolFunc& func) {
         OperatorCont::iterator itx = _operator.begin();
         OperatorCont::iterator itxe = _operator.end();
 
-        if (it != ite && _startByNot) {
-            func.invertStartByNot();
+        if (it != ite) {
+            if (_startByNot)
+                func.invertStartByNot();
             (*it)->addBoolFunc(func);
-            func.invertStartByNot();// on revient a la normale
+            if (_startByNot)
+                func.invertStartByNot(); // on revient a la normale
             ++it;
         }
 
@@ -156,13 +158,18 @@ void BoolFunc::addBoolFunc(BoolFunc& func) {
     }
 
     std::vector< SmartPtr<Node> > functions;
+
     divideInAndBoolFunc(functions);
+    for (unsigned int i = 0; i < functions.size(); i++) {
+        std::cout << functions[i]->dump() << std::endl;
+    }
     for (unsigned int i = 0; i < functions.size(); i++) {
         BoolFunc tmpFunc(func);
         for (unsigned int o = 1; o < functions.size(); o++) {
             tmpFunc.addOperator(Singleton<AndNot>::Instance());
             tmpFunc.addDynBoolFunc(functions[(o + i) % functions.size()]);
         }
+        std::cout << "added " << tmpFunc.dump() << std::endl;
         functions[i]->addBoolFunc(tmpFunc);
     }
 
@@ -210,7 +217,7 @@ void BoolFunc::divideInAndBoolFunc(std::vector< SmartPtr<Node> >& in) {
     OperatorCont::iterator itxe = _operator.end();
 
     BoolFunc* tmp = 0;
-    while (it != ite && itx != itxe) {
+    while (it != ite) {
         tmp = new BoolFunc();
         tmp->addOperand(*it);
         ++it;
