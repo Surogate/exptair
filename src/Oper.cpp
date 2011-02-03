@@ -111,3 +111,47 @@ std::string OrNot::getValue() const {
     return "OR NOT";
 }
 
+xbool Xor::execute(xbool a, xbool b) const {
+    if ((a == xtrue || b == xtrue) && !(a == xtrue && b == xtrue))
+        return xtrue;
+    if (a == xreevaluate || b == xreevaluate)
+        return xreevaluate;
+    if (a == xundefined || b == xundefined)
+        return xundefined;
+    return xfalse;
+}
+
+int Xor::complexity() const {
+    return 3;
+}
+
+operCode Xor::getCode() const {
+    return XOR;
+}
+
+std::string Xor::getValue() const {
+    return "XOR";
+}
+
+xbool XorNot::execute(xbool a, xbool b) const {
+    b = Not::execute(b);
+    if ((a == xtrue || b == xtrue) && !(a == xtrue && b == xtrue))
+        return xtrue;
+    if (a == xreevaluate || b == xreevaluate)
+        return xreevaluate;
+    if (a == xundefined || b == xundefined)
+        return xundefined;
+    return xfalse;
+}
+
+int XorNot::complexity() const {
+    return 4;
+}
+
+operCode XorNot::getCode() const {
+    return XORNOT;
+}
+
+std::string XorNot::getValue() const {
+    return "XOR NOT";
+}

@@ -62,5 +62,21 @@ class OrNot : public Oper, public Singleton<OrNot> {
     std::string getValue() const;
 };
 
+class Xor : public Oper, public Singleton<Xor> {
+    SINGLETON_CLASS(Xor);
+    xbool execute(xbool a, xbool b) const;
+    int complexity() const;
+    operCode getCode() const;
+    std::string getValue() const;
+};
+
+class XorNot : public Oper, public Singleton<XorNot> {
+    SINGLETON_CLASS(XorNot);
+    xbool execute(xbool a, xbool b) const;
+    int complexity() const;
+    operCode getCode() const;
+    std::string getValue() const;
+};
+
 #endif	/* OPER_H */
 

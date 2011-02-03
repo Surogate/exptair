@@ -25,6 +25,7 @@ public:
     void forward();
     void backward();
     std::string getXboolValue(xbool val) const;
+    void devaluateAll();
 private:
     NodeCont _nodeList;
     XBoolList _xboolValue;

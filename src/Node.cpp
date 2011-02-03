@@ -163,6 +163,11 @@ int Node::complexity() const {
     }
 }
 
+void Node::devaluate() {
+    if (_boolFuncList.size())
+        _evaluate = false;
+}
+
 void Node::addInClosedList(ClosedList& list, char letter) {
     list[letter] = true;
 }

@@ -37,6 +37,7 @@ public:
     char getLetter() const;
 
     virtual int complexity() const;
+    void devaluate();
 
 protected:
     void addInClosedList(ClosedList& list, char letter);

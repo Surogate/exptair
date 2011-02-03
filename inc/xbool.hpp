@@ -19,7 +19,9 @@ enum operCode {
     AND,
     OR,
     ANDNOT,
-    ORNOT
+    ORNOT,
+    XOR,
+    XORNOT
 };
 
 #endif	/* XBOOL_HPP */
