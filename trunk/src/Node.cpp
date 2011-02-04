@@ -49,7 +49,7 @@ char Node::getLetter() const {
 
 // ajoute une regle dans la liste, suivant sa complexite
 
-void Node::addBoolFunc(const BoolFunc& func) {
+void Node::addBoolFunc(BoolFunc& func) {
     _evaluate = false;
     FuncList::iterator it = _boolFuncList.begin();
     FuncList::iterator ite = _boolFuncList.end();
@@ -57,7 +57,7 @@ void Node::addBoolFunc(const BoolFunc& func) {
     while (it != ite && it->complexity() < func.complexity()) {
         ++it;
     }
-
+    
     if (it != ite) {
         _boolFuncList.insert(it, func);
     } else {
