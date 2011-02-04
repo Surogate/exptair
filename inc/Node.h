@@ -28,7 +28,7 @@ public:
 
     Node& operator=(const Node& orig);
     
-    virtual void addBoolFunc(const BoolFunc& func);
+    virtual void addBoolFunc(BoolFunc& func);
     virtual xbool forward(ClosedList* list = 0);
     virtual xbool backward(ClosedList* list = 0);
 

@@ -146,8 +146,10 @@ int BoolFunc::complexity() const {
 }
 
 void BoolFunc::addOperator(Oper& op) {
-    if (op.getCode() != AND && op.getCode() != ANDNOT)
+    if (op.getCode() != AND && op.getCode() != ANDNOT) {
         _andFlags = false;
+    }
+        
     _operator.push_back(&op);
 }
 
@@ -156,11 +158,6 @@ void BoolFunc::addOperand(SmartPtr<Node> no) {
 }
 
 void BoolFunc::addBoolFunc(BoolFunc& func) {
-    if (_operand.size() == 1) {
-        (*_operand.begin())->addBoolFunc(func);
-        return;
-    }
-
     if (_andFlags) {
         NodeCont::iterator it = _operand.begin();
         NodeCont::iterator ite = _operand.end();
@@ -195,15 +192,11 @@ void BoolFunc::addBoolFunc(BoolFunc& func) {
 
     divideInAndBoolFunc(functions);
     for (unsigned int i = 0; i < functions.size(); i++) {
-        std::cout << functions[i]->dump() << std::endl;
-    }
-    for (unsigned int i = 0; i < functions.size(); i++) {
         BoolFunc tmpFunc(func);
         for (unsigned int o = 1; o < functions.size(); o++) {
             tmpFunc.addOperator(Singleton<AndNot>::Instance());
             tmpFunc.addDynBoolFunc(functions[(o + i) % functions.size()]);
         }
-        std::cout << "added " << tmpFunc.dump() << std::endl;
         functions[i]->addBoolFunc(tmpFunc);
     }
 
@@ -250,11 +243,16 @@ void BoolFunc::divideInAndBoolFunc(std::vector< SmartPtr<Node> >& in) {
     OperatorCont::iterator itx = _operator.begin();
     OperatorCont::iterator itxe = _operator.end();
 
-    BoolFunc* tmp = new BoolFunc;
+    BoolFunc* tmp = new BoolFunc();
     tmp->_startByNot = _startByNot;
     while (it != ite) {
-        if (!tmp)
+        if (!tmp) {
             tmp = new BoolFunc();
+            if (itx != itxe && ((*itx)->getCode() == ORNOT || (*itx)->getCode() == XORNOT))
+                tmp->_startByNot = true;
+            ++itx;
+        }
+
         tmp->addOperand(*it);
         ++it;
         while (it != ite && itx != itxe && ((*itx)->getCode() == AND || (*itx)->getCode() == ANDNOT)) {
@@ -263,10 +261,10 @@ void BoolFunc::divideInAndBoolFunc(std::vector< SmartPtr<Node> >& in) {
             ++it;
             ++itx;
         }
-        if (itx != itxe && ((*itx)->getCode() == ORNOT || (*itx)->getCode() == XORNOT))
-            tmp->_startByNot = true;
-        in.push_back(SmartPtr<Node > (tmp));
-        ++itx;
+
+        SmartPtr<Node> sPtr;
+        sPtr = tmp;
+        in.push_back(sPtr);
         tmp = 0;
     }
 }
