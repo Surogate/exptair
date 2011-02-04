@@ -14,10 +14,13 @@ int main(int ac, char** av) {
     std::string path;
 
     if (ac >= 2) {
-        path = av[ac - 1];
-        if (topClass.loadPath(path)) {
-            topClass.forward();
+        for (int i = 1; i < ac; i++) {
+            path = av[i];
+            if (topClass.loadPath(path)) {
+                std::cout << "load " << path << " ok !!§§" << std::endl;
+            }
         }
+        topClass.forward();
     }
 
     topClass.backward();

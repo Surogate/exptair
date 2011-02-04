@@ -27,6 +27,8 @@ public:
     bool parseContinue();
     bool parseForward(Ai& to);
     bool parseLoad(Ai& to);
+    bool parseClear(Ai& to);
+    bool parseRule(Ai& to);
 
 private:
 

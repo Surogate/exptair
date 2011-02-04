@@ -168,6 +168,16 @@ void Node::devaluate() {
         _evaluate = false;
 }
 
+void Node::dumpAll() {
+    FuncList::const_iterator it = _boolFuncList.begin();
+    FuncList::const_iterator ite = _boolFuncList.end();
+
+    while (it != ite) {
+        std::cout << _let << " got " << it->dump() << std::endl;
+        ++it;
+    }
+}
+
 void Node::addInClosedList(ClosedList& list, char letter) {
     list[letter] = true;
 }

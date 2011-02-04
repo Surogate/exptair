@@ -175,3 +175,19 @@ bool InputFileParser::parseLoad(Ai& to) {
     }
     return false;
 }
+
+bool InputFileParser::parseClear(Ai& to) {
+    if (readText("clear")) {
+        to.clear();
+        return true;
+    }
+    return false;
+}
+
+bool InputFileParser::parseRule(Ai& to) {
+    if (readText("rules")) {
+        to.dumpAll();
+        return true;
+    }
+    return false;
+}
