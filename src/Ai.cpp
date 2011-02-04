@@ -77,8 +77,9 @@ void Ai::forward() {
 void Ai::backward() {
     bool continue_ = true;
     std::string str;
-    std::cout << "command : ={func} ; !={func} ; ?={func} ; {func}={func} ; {func}? ; forward ; exit ; load \"{path}\"" << std::endl;
+    std::cout << "command : ={func} ; !={func} ; ?={func} ; {func}={func} ; {func}? ; forward ; exit ; load \"{path}\" ; clear ; rules" << std::endl;
     while (continue_) {
+        std::cout << '>';
         str.clear();
         std::getline(std::cin, str);
         if (str.size()) {
@@ -86,10 +87,14 @@ void Ai::backward() {
             if (!(Singleton<InputFileParser>::Instance().parseLine(*this)
                     || Singleton<InputFileParser>::Instance().parseInterogation(*this)
                     || Singleton<InputFileParser>::Instance().parseForward(*this)
-                    || Singleton<InputFileParser>::Instance().parseLoad(*this))) {
+                    || Singleton<InputFileParser>::Instance().parseLoad(*this)
+                    || Singleton<InputFileParser>::Instance().parseClear(*this)
+                    || Singleton<InputFileParser>::Instance().parseRule(*this))) {
                 continue_ = Singleton<InputFileParser>::Instance().parseContinue();
-                if (continue_)
-                    std::cout << "invalid command" << std::endl;
+                if (continue_) {
+                    std::cout << "command : ={func} ; !={func} ; ?={func} ; {func}={func} ; {func}? ; forward ; exit ; load \"{path}\" ; clear ; rules" << std::endl;
+                }
+
             }
         }
     }
@@ -109,6 +114,20 @@ void Ai::devaluateAll() {
 
     while (it != ite) {
         it->second->devaluate();
+        ++it;
+    }
+}
+
+void Ai::clear() {
+    _nodeList.clear();
+}
+
+void Ai::dumpAll() {
+    NodeCont::iterator it = _nodeList.begin();
+    NodeCont::iterator ite = _nodeList.end();
+
+    while (it != ite) {
+        it->second->dumpAll();
         ++it;
     }
 }

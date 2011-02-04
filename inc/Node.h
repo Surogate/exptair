@@ -38,6 +38,7 @@ public:
 
     virtual int complexity() const;
     void devaluate();
+    void dumpAll();
 
 protected:
     void addInClosedList(ClosedList& list, char letter);
